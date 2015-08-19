@@ -3,12 +3,13 @@
   package="org.exoplatform.android.calendar" >
   <uses-permission android:name="android.permission.INTERNET" />
   <application
+    android:name="org.exoplatform.android.calendar.ExoCalendarApp"
     android:allowBackup="true"
     android:icon="@mipmap/ic_launcher"
     android:label="@string/app_name"
     android:theme="@style/AppTheme" >
     <activity
-      android:name=".MainActivity"
+      android:name="org.exoplatform.android.calendar.ui.ManageCalendarActivity"
       android:label="@string/app_name" >
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
