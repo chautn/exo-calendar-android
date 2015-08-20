@@ -3,7 +3,8 @@
               android:id="@+id/layout_1"
               android:orientation="vertical"
               android:layout_height="match_parent"
-              android:layout_width="match_parent">
+              android:layout_width="match_parent"
+              android:background="#ECEFF1">
 
   <LinearLayout
     android:orientation="horizontal"
@@ -31,6 +32,7 @@
     android:id="@+id/calendar_list_view"
     android:layout_width="match_parent"
     android:layout_height="0dp"
-    android:layout_weight="1">
+    android:layout_weight="1"
+    android:background="#FFD700">
   </android.support.v7.widget.RecyclerView>
 </LinearLayout>
