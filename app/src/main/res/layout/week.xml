@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+  <LinearLayout
+    android:layout_width="25dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#000000">
+    <org.exoplatform.android.calendar.ui.VerticalTextView
+      android:background="#000000"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="&gt;&gt;"
+      android:textColor="#FFFFFF"
+      android:gravity="center|bottom"
+      android:textSize="10sp"/>
+    <org.exoplatform.android.calendar.ui.VerticalTextView
+      android:id="@+id/week_view_caption"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:text="September 2015"
+      android:textAllCaps="true"
+      android:textColor="#FFFFFF"
+      android:gravity="center|bottom"
+      android:textSize="10sp"
+      android:textScaleX="3"/>
+
+    <org.exoplatform.android.calendar.ui.VerticalTextView
+      android:background="#000000"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="&lt;&lt;"
+      android:textColor="#FFFFFF"
+      android:gravity="center|bottom"
+      android:textSize="10sp"/>
+  </LinearLayout>
+
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/week_view"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:background="#FF0000">
+  </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>
