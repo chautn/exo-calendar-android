@@ -9,7 +9,7 @@ import java.util.Date;
  */
 public abstract class ComparableOccurrence implements Comparable<ComparableOccurrence> {
 
-  public static final String iso8601dateformat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+  public static final String iso8601dateformat = "yyyy-MM-dd'T'HH:mm:ssZ";
 
   public abstract Date getStartDate();
 
@@ -21,14 +21,11 @@ public abstract class ComparableOccurrence implements Comparable<ComparableOccur
   }
 
   public String getStartAMPM() {
-    Date date = getStartDate();
-    DateFormat df = new SimpleDateFormat("h:mm a");
-    return df.format(date);
+    return (new SimpleDateFormat("h:mma")).format(getStartDate());
   }
 
   public String getEndAMPM() {
     Date date = getEndDate();
-    DateFormat df = new SimpleDateFormat("h:mm a");
-    return df.format(date);
+    return (new SimpleDateFormat("h:mma")).format(getEndDate());
   }
 }

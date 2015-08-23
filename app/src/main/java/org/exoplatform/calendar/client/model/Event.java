@@ -1,8 +1,11 @@
 package org.exoplatform.calendar.client.model;
 
+import org.exoplatform.commons.utils.ISO8601;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -362,21 +365,12 @@ public class Event extends ComparableOccurrence implements Identifiable {
     }
   }
 
+  @Override
   public Date getStartDate() {
-    DateFormat dateFormat = new SimpleDateFormat(iso8601dateformat);
-    try {
-      return dateFormat.parse(from);
-    } catch (ParseException e) {
-      return null;
-    }
+    return ISO8601.parse(from).getTime();
   }
 
   public Date getEndDate() {
-    DateFormat dateFormat = new SimpleDateFormat(iso8601dateformat);
-    try {
-      return dateFormat.parse(to);
-    } catch (ParseException e) {
-      return null;
-    }
+    return ISO8601.parse(to).getTime();
   }
 }
