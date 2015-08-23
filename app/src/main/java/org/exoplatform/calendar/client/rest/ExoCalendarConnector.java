@@ -6,8 +6,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.android.AndroidLog;
 import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
 
@@ -37,6 +41,7 @@ public class ExoCalendarConnector {
         .setClient(new OkClient(new OkHttpClient()))
         .setConverter(new GsonConverter(gson))
         .setRequestInterceptor(interceptor)
+        .setLogLevel(RestAdapter.LogLevel.FULL).setLog(new AndroidLog("RETRO"))
         .build();
     service = adapter.create(ExoCalendarRestService.class);
   }
