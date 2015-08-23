@@ -1,5 +1,6 @@
 package org.exoplatform.calendar.client.rest;
 
+import org.exoplatform.calendar.client.model.Event;
 import org.exoplatform.calendar.client.model.ExoCalendar;
 import org.exoplatform.calendar.client.model.ParsableList;
 
@@ -32,4 +33,14 @@ public interface ExoCalendarRestService {
 
   @DELETE("/calendars/{calendar_id}")
   void deleteCalendarById(@Path("calendar_id") String calendar_id, Callback<Response> callback);
+
+  @GET("/calendars/{calendar_id}/events")
+  void getEventsByCalendarId(@Query("returnSize") boolean returnSize,
+                             @Query("offset") int offset,
+                             @Query("startTime") String start,
+                             @Query("endTime") String end,
+                             @Path("calendar_id") String calendar_id,
+                             Callback<ParsableList<Event>> callback);
+
+
 }

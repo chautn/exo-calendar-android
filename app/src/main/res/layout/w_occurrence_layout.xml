@@ -21,6 +21,7 @@
     android:textColor="#FFFFFF"
     android:textSize="12sp"
     android:textScaleX="1.2"
+    android:maxLength="35"
     android:gravity="left|center_vertical"/>
 
 </LinearLayout>
