@@ -62,6 +62,8 @@ public class WeekViewAdapter extends RecyclerView.Adapter<WeekViewAdapter.ViewHo
     holder.day_of_week.setText((new SimpleDateFormat("EEE").format(date)));
     holder.day_of_month.setText((new SimpleDateFormat("dd").format(date)));
 
+    holder.wlayout_4.removeAllViews();
+
     //dynamically add occurrence item layout
     if ((list != null) && (list.size() > 0)) {
       int length = list.size();
