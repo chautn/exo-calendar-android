@@ -38,14 +38,14 @@ public class WeekViewAdapter extends RecyclerView.Adapter<WeekViewAdapter.ViewHo
   public static final int top_n = 3; //max num of occurrences displayed a day
   public Context context;
   public ExoCalendarConnector connector;
-  public List<ParsableList<Event>> occ_ds;
+  public List<List<ComparableOccurrence>> occurrences;
   public List<Date> week;
 
-  public WeekViewAdapter(Context context, ExoCalendarConnector connector, List<Date> week, List<ParsableList<Event>> occ_ds) {
+  public WeekViewAdapter(Context context, ExoCalendarConnector connector, List<Date> week, List<List<ComparableOccurrence>> occurrences) {
     this.context = context;
     this.connector = connector;
     this.week = week;
-    this.occ_ds = occ_ds;
+    this.occurrences = occurrences;
   }
 
   public WeekViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -57,26 +57,26 @@ public class WeekViewAdapter extends RecyclerView.Adapter<WeekViewAdapter.ViewHo
 
   public void onBindViewHolder(final ViewHolder holder, final int position) {
     Date date = week.get(position);
-    ParsableList<Event> occurrenceParsableList = occ_ds.get(position);
+    List<ComparableOccurrence> list = occurrences.get(position);
 
     holder.day_of_week.setText((new SimpleDateFormat("EEE").format(date)));
     holder.day_of_month.setText((new SimpleDateFormat("dd").format(date)));
 
     //dynamically add occurrence item layout
-    if ((occurrenceParsableList.data != null) && (occurrenceParsableList.data.length > 0)) {
-      System.out.println("OKOKOKOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOK");
-      for (int i = 0; ((i < 3) && (i < occurrenceParsableList.data.length)); i++) {
+    if ((list != null) && (list.size() > 0)) {
+      int length = list.size();
+      for (int i = 0; ((i < 3) && (i < length)); i++) {
         LinearLayout occurrence_layout = (LinearLayout) LayoutInflater.from(this.context).inflate(R.layout.w_occurrence_layout, null);
         TextView occurrence_start = (TextView) occurrence_layout.findViewById(R.id.occurrence_start);
-        occurrence_start.setText(occurrenceParsableList.data[i].getStartAMPM());
+        occurrence_start.setText(list.get(i).getStartAMPM());
         TextView occurrence_title = (TextView) occurrence_layout.findViewById(R.id.occurrence_title);
-        occurrence_title.setText(occurrenceParsableList.data[i].getSubject());
+        occurrence_title.setText(list.get(i).getTitle());
         holder.wlayout_4.addView(occurrence_layout);
       }
 
       //view number of occurrences
-      if (3 < occurrenceParsableList.data.length) {
-        holder.occurrence_number_view.setText("+" + Integer.toString(occurrenceParsableList.data.length - 3));
+      if (3 < length) {
+        holder.occurrence_number_view.setText("+" + Integer.toString(length - 3));
       }
     }
   }

@@ -2,33 +2,24 @@ package org.exoplatform.calendar.client.model;
 
 import org.exoplatform.commons.utils.ISO8601;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by chautn on 8/17/15.
+ * Created by chautn on 8/25/15.
  */
-public class Event extends ComparableOccurrence implements Identifiable {
+public class Task extends ComparableOccurrence implements Identifiable {
 
   public String to;
   public String[] attachments;
   public String from;
   public String[] categories;
   public String categoryId;
-  public String availability;
-  public Repeat repeat;
   public Reminder[] reminder;
-  public String privacy;
-  public String recurrenceId;
-  public String[] participants;
-  public String originalEvent;
+  public String[] delegation;
   public String calendar;
-  public String subject;
-  public String description;
-  public String location;
+  public String status;
+  public String note;
+  public String name;
   public String priority;
   public String href;
   public String id;
@@ -63,47 +54,17 @@ public class Event extends ComparableOccurrence implements Identifiable {
   public void setCategoryId(String categoryId) {
     this.categoryId = categoryId;
   }
-  public String getAvailability() {
-    return availability;
-  }
-  public void setAvailability(String availability) {
-    this.availability = availability;
-  }
-  public Repeat getRepeat() {
-    return repeat;
-  }
-  public void setRepeat(Repeat repeat) {
-    this.repeat = repeat;
-  }
   public Reminder[] getReminder() {
     return reminder;
   }
   public void setReminder(Reminder[] reminder) {
     this.reminder = reminder;
   }
-  public String getPrivacy() {
-    return privacy;
+  public String[] getDelegation() {
+    return delegation;
   }
-  public void setPrivacy(String privacy) {
-    this.privacy = privacy;
-  }
-  public String getRecurrenceId() {
-    return recurrenceId;
-  }
-  public void setRecurrenceId(String recurrenceId) {
-    this.recurrenceId = recurrenceId;
-  }
-  public String[] getParticipants() {
-    return participants;
-  }
-  public void setParticipants(String[] participants) {
-    this.participants = participants;
-  }
-  public String getOriginalEvent() {
-    return originalEvent;
-  }
-  public void setOriginalEvent(String originalEvent) {
-    this.originalEvent = originalEvent;
+  public void setDelegation(String[] delegation) {
+    this.delegation = delegation;
   }
   public String getCalendar() {
     return calendar;
@@ -111,23 +72,23 @@ public class Event extends ComparableOccurrence implements Identifiable {
   public void setCalendar(String calendar) {
     this.calendar = calendar;
   }
-  public String getSubject() {
-    return subject;
+  public String getStatus() {
+    return status;
   }
-  public void setSubject(String subject) {
-    this.subject = subject;
+  public void setStatus(String status) {
+    this.status = status;
   }
-  public String getDescription() {
-    return description;
+  public String getNote() {
+    return note;
   }
-  public void setDescription(String description) {
-    this.description = description;
+  public void setNote(String note) {
+    this.note = note;
   }
-  public String getLocation() {
-    return location;
+  public String getName() {
+    return name;
   }
-  public void setLocation(String location) {
-    this.location = location;
+  public void setName(String name) {
+    this.name = name;
   }
   public String getPriority() {
     return priority;
@@ -147,76 +108,7 @@ public class Event extends ComparableOccurrence implements Identifiable {
   public void setId(String id) {
     this.id = id;
   }
-  public class Repeat {
-    public String[] exclude;
-    public String repeatOn;
-    public String repeateBy;
-    public int every;
-    public Boolean enabled;
-    public End end;
-    public String type;
 
-    public String[] getExclude() {
-      return exclude;
-    }
-    public void setExclude(String[] exclude) {
-      this.exclude = exclude;
-    }
-    public String getRepeatOn() {
-      return repeatOn;
-    }
-    public void setRepeatOn(String repeatOn) {
-      this.repeatOn = repeatOn;
-    }
-    public String getRepeateBy() {
-      return repeateBy;
-    }
-    public void setRepeateBy(String repeateBy) {
-      this.repeateBy = repeateBy;
-    }
-    public int getEvery() {
-      return every;
-    }
-    public void setEvery(int every) {
-      this.every = every;
-    }
-    public Boolean getEnabled() {
-      return enabled;
-    }
-    public void setEnabled(Boolean enabled) {
-      this.enabled = enabled;
-    }
-    public End getEnd() {
-      return end;
-    }
-    public void setEnd(End end) {
-      this.end = end;
-    }
-    public String getType() {
-      return type;
-    }
-    public void setType(String type) {
-      this.type = type;
-    }
-
-    public class End {
-      public String value;
-      public String type;
-
-      public String getValue() {
-        return value;
-      }
-      public void setValue(String value) {
-        this.value = value;
-      }
-      public String getType() {
-        return type;
-      }
-      public void setType(String type) {
-        this.type = type;
-      }
-    }
-  }
   public class Reminder {
     public String summary;
     public int repeatInterval;
@@ -298,7 +190,7 @@ public class Event extends ComparableOccurrence implements Identifiable {
     }
 
     public class FromDateTime {
-      public int day;
+      public int from;
       public int timezoneOffset;
       public int date;
       public int hours;
@@ -308,11 +200,11 @@ public class Event extends ComparableOccurrence implements Identifiable {
       public long time;
       public int year;
 
-      public int getDay() {
-        return day;
+      public int getFrom() {
+        return from;
       }
-      public void setDay(int day) {
-        this.day = day;
+      public void setFrom(int from) {
+        this.from = from;
       }
       public int getTimezoneOffset() {
         return timezoneOffset;
@@ -374,6 +266,6 @@ public class Event extends ComparableOccurrence implements Identifiable {
   }
 
   public String getTitle() {
-    return subject;
+    return name;
   }
 }

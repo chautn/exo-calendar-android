@@ -3,6 +3,7 @@ package org.exoplatform.calendar.client.rest;
 import org.exoplatform.calendar.client.model.Event;
 import org.exoplatform.calendar.client.model.ExoCalendar;
 import org.exoplatform.calendar.client.model.ParsableList;
+import org.exoplatform.calendar.client.model.Task;
 
 import retrofit.Callback;
 import retrofit.client.Response;
@@ -42,5 +43,11 @@ public interface ExoCalendarRestService {
                              @Path("calendar_id") String calendar_id,
                              Callback<ParsableList<Event>> callback);
 
-
+  @GET("/calendars/{calendar_id}/tasks")
+  void getTasksByCalendarId(@Query("returnSize") boolean returnSize,
+                             @Query("offset") int offset,
+                             @Query("startTime") String start,
+                             @Query("endTime") String end,
+                             @Path("calendar_id") String calendar_id,
+                             Callback<ParsableList<Task>> callback);
 }

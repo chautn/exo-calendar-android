@@ -3,6 +3,7 @@ package org.exoplatform.calendar.client.model;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by chautn on 8/17/15.
@@ -28,4 +29,6 @@ public abstract class ComparableOccurrence implements Comparable<ComparableOccur
     Date date = getEndDate();
     return (new SimpleDateFormat("h:mma")).format(getEndDate());
   }
+
+  public abstract String getTitle();
 }

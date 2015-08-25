@@ -13,6 +13,7 @@ import org.exoplatform.calendar.client.model.ComparableOccurrence;
 import org.exoplatform.calendar.client.model.Event;
 import org.exoplatform.calendar.client.model.ExoCalendar;
 import org.exoplatform.calendar.client.model.ParsableList;
+import org.exoplatform.calendar.client.model.Task;
 import org.exoplatform.calendar.client.rest.ExoCalendarConnector;
 import org.exoplatform.calendar.client.rest.ExoCalendarRestService;
 
@@ -20,6 +21,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -37,7 +39,10 @@ public class WeekViewActivity extends Activity {
   public RecyclerView.LayoutManager layoutManager;
   public ExoCalendarConnector connector;
   public ParsableList<ExoCalendar> calendar_ds;
-  public List<ParsableList<Event>> occ_ds;
+  //public List<ParsableList<ComparableOccurrence>> occ_ds;
+  public List<ParsableList<Event>> event_ds;
+  public List<ParsableList<Task>> task_ds;
+  public List<List<ComparableOccurrence>> occurrences;
   public List<Date> week;
   public WeekViewAdapter adapter;
 
@@ -69,14 +74,18 @@ public class WeekViewActivity extends Activity {
     DateFormat dateFormat = new SimpleDateFormat("MMMM' 'yyyy");
     caption.setText(dateFormat.format(week.get(0).getTime()));
 
+    // Init datasets
     calendar_ds = new ParsableList<ExoCalendar>();
-
-    occ_ds = new ArrayList<ParsableList<Event>>();
+    event_ds = new ArrayList<ParsableList<Event>>();
+    task_ds = new ArrayList<ParsableList<Task>>();
+    occurrences = new ArrayList<List<ComparableOccurrence>>();
     for (int i=0; i < 7; i++) {
-      occ_ds.add(new ParsableList<Event>());
+      event_ds.add(new ParsableList<Event>());
+      task_ds.add(new ParsableList<Task>());
+      occurrences.add(new ArrayList<ComparableOccurrence>());
     }
 
-    adapter = new WeekViewAdapter(this, connector, week, occ_ds);
+    adapter = new WeekViewAdapter(this, connector, week, occurrences);
     week_view.setAdapter(adapter);
 
     //load data
@@ -99,30 +108,62 @@ public class WeekViewActivity extends Activity {
             System.out.println(start + " " + end);
 
             for (final ExoCalendar calendar : calendar_ds.data) {
-              //System.out.println(calendar.getName() + " " + calendar.getId());
 
+              //Event callback
               final Callback<ParsableList<Event>> callback1 = new Callback<ParsableList<Event>>() {
                 @Override
                 public void success(ParsableList<Event> eventParsableList, Response response) {
-                  System.out.println("YESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-                  occ_ds.get(position).add(eventParsableList);
-                  System.out.println(eventParsableList.data.length);
+                  event_ds.get(position).add(eventParsableList);
+                  if ((eventParsableList.data != null) && (eventParsableList.data.length != 0)) {
+                    int length = eventParsableList.data.length;
+                    for (int i=0; i < length; i++) {
+                      occurrences.get(position).add(eventParsableList.data[i]);
+                      Collections.sort(occurrences.get(position));
+                    }
+                  }
                   adapter.notifyItemChanged(position); //update views
-                  adapter.notifyDataSetChanged();
-                  if (occ_ds.get(position).data.length < eventParsableList.getSize()) {
-                    service.getEventsByCalendarId(true, occ_ds.get(position).data.length, start, end, calendar.getId(), this);
+                  if (event_ds.get(position).data.length < eventParsableList.getSize()) {
+                    service.getEventsByCalendarId(true, event_ds.get(position).data.length, start, end, calendar.getId(), this);
                   }
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
-                  System.out.println("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+                  //
                 }
               };
-              if ((occ_ds.get(position).data != null) && (occ_ds.get(position).data.length > 0)) {
-                service.getEventsByCalendarId(true, occ_ds.get(position).data.length, start, end, calendar.getId(), callback1);
+              //Task callback
+              final Callback<ParsableList<Task>> callback2 = new Callback<ParsableList<Task>>() {
+                @Override
+                public void success(ParsableList<Task> taskParsableList, Response response) {
+                  task_ds.get(position).add(taskParsableList);
+                  if ((taskParsableList.data != null) && (taskParsableList.data.length != 0)) {
+                    int length = taskParsableList.data.length;
+                    for (int i=0; i < length; i++) {
+                      occurrences.get(position).add(taskParsableList.data[i]);
+                      Collections.sort(occurrences.get(position));
+                    }
+                  }
+                  adapter.notifyItemChanged(position); //update views
+                  if (task_ds.get(position).data.length < taskParsableList.getSize()) {
+                    service.getTasksByCalendarId(true, task_ds.get(position).data.length, start, end, calendar.getId(), this);
+                  }
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                  //
+                }
+              };
+              if ((event_ds.get(position).data != null) && (event_ds.get(position).data.length > 0)) {
+                service.getEventsByCalendarId(true, event_ds.get(position).data.length, start, end, calendar.getId(), callback1);
               } else {
                 service.getEventsByCalendarId(true, 0, start, end, calendar.getId(), callback1);
+              }
+              if ((task_ds.get(position).data != null) && (task_ds.get(position).data.length > 0)) {
+                service.getTasksByCalendarId(true, task_ds.get(position).data.length, start, end, calendar.getId(), callback2);
+              } else {
+                service.getTasksByCalendarId(true, 0, start, end, calendar.getId(), callback2);
               }
             }
           }
