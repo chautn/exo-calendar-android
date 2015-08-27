@@ -15,7 +15,7 @@
     app:showAsAction="withText"/>
   <item
     android:id="@+id/create_calendar"
-    android:title="new calendar"
+    android:title="(+)"
     android:orderInCategory="100"
-    app:showAsAction="withText"/>
+    app:showAsAction="ifRoom"/>
 </menu>

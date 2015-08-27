@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,6 +42,8 @@ public class ManageCalendarActivity extends AppCompatActivity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.manage_calendar_activity);
+    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar1);
+    setSupportActionBar(toolbar);
 
     calendar_list_view = (RecyclerView) findViewById(R.id.calendar_list_view);
 

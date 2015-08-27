@@ -2,6 +2,7 @@ package org.exoplatform.android.calendar.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -32,7 +33,7 @@ import retrofit.client.Response;
 /**
  * Created by chautn on 8/21/15.
  */
-public class WeekViewActivity extends Activity {
+public class WeekViewActivity extends AppCompatActivity {
 
   public VerticalTextView caption;
   public RecyclerView week_view;
