@@ -11,24 +11,11 @@ import android.widget.TextView;
 
 import org.exoplatform.android.calendar.R;
 import org.exoplatform.calendar.client.model.ComparableOccurrence;
-import org.exoplatform.calendar.client.model.Event;
-import org.exoplatform.calendar.client.model.ExoCalendar;
-import org.exoplatform.calendar.client.model.ParsableList;
 import org.exoplatform.calendar.client.rest.ExoCalendarConnector;
-import org.exoplatform.commons.utils.ISO8601;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by chautn on 8/20/15.
@@ -63,6 +50,7 @@ public class WeekViewAdapter extends RecyclerView.Adapter<WeekViewAdapter.ViewHo
     holder.day_of_month.setText((new SimpleDateFormat("dd").format(date)));
 
     holder.wlayout_4.removeAllViews();
+    holder.occurrence_number_view.setText("");
 
     //dynamically add occurrence item layout
     if ((list != null) && (list.size() > 0)) {

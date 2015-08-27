@@ -1,12 +1,11 @@
 package org.exoplatform.android.calendar.ui;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
-import com.squareup.okhttp.Call;
+import android.view.View;
+import android.widget.TextView;
 
 import org.exoplatform.android.calendar.ExoCalendarApp;
 import org.exoplatform.android.calendar.R;
@@ -16,7 +15,6 @@ import org.exoplatform.calendar.client.model.ExoCalendar;
 import org.exoplatform.calendar.client.model.ParsableList;
 import org.exoplatform.calendar.client.model.Task;
 import org.exoplatform.calendar.client.rest.ExoCalendarConnector;
-import org.exoplatform.calendar.client.rest.ExoCalendarRestService;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -35,12 +33,13 @@ import retrofit.client.Response;
  */
 public class WeekViewActivity extends AppCompatActivity {
 
-  public VerticalTextView caption;
-  public RecyclerView week_view;
+  public TextView caption;
+  public TextView next;
+  public TextView prev;
+  public RecyclerView recyclerView;
   public RecyclerView.LayoutManager layoutManager;
   public ExoCalendarConnector connector;
   public ParsableList<ExoCalendar> calendar_ds;
-  //public List<ParsableList<ComparableOccurrence>> occ_ds;
   public List<ParsableList<Event>> event_ds;
   public List<ParsableList<Task>> task_ds;
   public List<List<ComparableOccurrence>> occurrences;
@@ -50,16 +49,63 @@ public class WeekViewActivity extends AppCompatActivity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.week);
-
-    week_view = (RecyclerView) findViewById(R.id.week_view);
-    week_view.setHasFixedSize(true);
+    caption = (TextView) findViewById(R.id.week_view_caption);
+    recyclerView = (RecyclerView) findViewById(R.id.week_view);
+    recyclerView.setHasFixedSize(true);
     layoutManager = new LinearLayoutManager(this);
-    week_view.setLayoutManager(layoutManager);
-
+    recyclerView.setLayoutManager(layoutManager);
     connector = ((ExoCalendarApp) getApplicationContext()).getConnector();
-    final ExoCalendarRestService service = connector.getService();
 
+    init();
+    adapter = new WeekViewAdapter(this, connector, week, occurrences);
+    recyclerView.setAdapter(adapter);
+
+    // Display offline data then load remote items.
+    caption.setText((new SimpleDateFormat("MMMM' 'yyyy")).format(week.get(0).getTime()));
+    download();
+
+    //next & previous button
+    next = (TextView) findViewById(R.id.next_week);
+    prev = (TextView) findViewById(R.id.previous_week);
+
+    next.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        for (int i = 0; i < 7; i++) {
+          Date date = new Date(week.get(i).getTime() + 1000 * 60 * 60 * 24 * 7);
+          week.set(i, date);
+        }
+        //reset all the lists and the calendar_ds as well. Re-caption the view.
+        reset();
+        caption.setText((new SimpleDateFormat("MMMM' 'yyyy")).format(week.get(0).getTime()));
+        //reload data
+        download();
+      }
+    });
+
+    prev.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        for (int i = 0; i < 7; i++) {
+          Date date = new Date(week.get(i).getTime() - 1000 * 60 * 60 * 24 * 7);
+          week.set(i, date);
+        }
+        //reset all the lists and the calendar_ds as well. Re-caption the view.
+        reset();
+        caption.setText((new SimpleDateFormat("MMMM' 'yyyy")).format(week.get(0).getTime()));
+        //reload data
+        download();
+      }
+    });
+  }
+
+  public void init() {
+    calendar_ds = new ParsableList<ExoCalendar>();
     week = new ArrayList<Date>();
+    event_ds = new ArrayList<ParsableList<Event>>();
+    task_ds = new ArrayList<ParsableList<Task>>();
+    occurrences = new ArrayList<List<ComparableOccurrence>>();
+
     for (int i=0; i < 7; i++) {
       Calendar cal = Calendar.getInstance();
       cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -69,34 +115,29 @@ public class WeekViewActivity extends AppCompatActivity {
       cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
       cal.add(Calendar.DAY_OF_WEEK, i);
       week.add(cal.getTime());
-    }
-
-    caption = (VerticalTextView) findViewById(R.id.week_view_caption);
-    DateFormat dateFormat = new SimpleDateFormat("MMMM' 'yyyy");
-    caption.setText(dateFormat.format(week.get(0).getTime()));
-
-    // Init datasets
-    calendar_ds = new ParsableList<ExoCalendar>();
-    event_ds = new ArrayList<ParsableList<Event>>();
-    task_ds = new ArrayList<ParsableList<Task>>();
-    occurrences = new ArrayList<List<ComparableOccurrence>>();
-    for (int i=0; i < 7; i++) {
       event_ds.add(new ParsableList<Event>());
       task_ds.add(new ParsableList<Task>());
       occurrences.add(new ArrayList<ComparableOccurrence>());
     }
+  }
 
-    adapter = new WeekViewAdapter(this, connector, week, occurrences);
-    week_view.setAdapter(adapter);
+  public void reset() {
+    calendar_ds.data = null;
+    for (int i=0; i < 7; i++) {
+      event_ds.set(i, new ParsableList<Event>());
+      task_ds.set(i, new ParsableList<Task>());
+      occurrences.set(i, new ArrayList<ComparableOccurrence>());
+    }
+  }
 
-    //load data
+  public void download() {
     final Callback<ParsableList<ExoCalendar>> callback = new Callback<ParsableList<ExoCalendar>>() {
       @Override
       public void success(ParsableList<ExoCalendar> exoCalendarParsableList, Response response) {
         calendar_ds.add(exoCalendarParsableList);
         if (calendar_ds.data.length < exoCalendarParsableList.getSize()) {
           // doesn't start to load events if calendar ds is not complete
-          service.getCalendars(true, calendar_ds.data.length, this);
+          connector.getService().getCalendars(true, calendar_ds.data.length, this);
         } else {
           // start load events and notifyDataSetChanged
           for (int i=0; i < 7; i++) {
@@ -124,7 +165,7 @@ public class WeekViewActivity extends AppCompatActivity {
                   }
                   adapter.notifyItemChanged(position); //update views
                   if (event_ds.get(position).data.length < eventParsableList.getSize()) {
-                    service.getEventsByCalendarId(true, event_ds.get(position).data.length, start, end, calendar.getId(), this);
+                    connector.getService().getEventsByCalendarId(true, event_ds.get(position).data.length, start, end, calendar.getId(), this);
                   }
                 }
 
@@ -147,7 +188,7 @@ public class WeekViewActivity extends AppCompatActivity {
                   }
                   adapter.notifyItemChanged(position); //update views
                   if (task_ds.get(position).data.length < taskParsableList.getSize()) {
-                    service.getTasksByCalendarId(true, task_ds.get(position).data.length, start, end, calendar.getId(), this);
+                    connector.getService().getTasksByCalendarId(true, task_ds.get(position).data.length, start, end, calendar.getId(), this);
                   }
                 }
 
@@ -157,14 +198,14 @@ public class WeekViewActivity extends AppCompatActivity {
                 }
               };
               if ((event_ds.get(position).data != null) && (event_ds.get(position).data.length > 0)) {
-                service.getEventsByCalendarId(true, event_ds.get(position).data.length, start, end, calendar.getId(), callback1);
+                connector.getService().getEventsByCalendarId(true, event_ds.get(position).data.length, start, end, calendar.getId(), callback1);
               } else {
-                service.getEventsByCalendarId(true, 0, start, end, calendar.getId(), callback1);
+                connector.getService().getEventsByCalendarId(true, 0, start, end, calendar.getId(), callback1);
               }
               if ((task_ds.get(position).data != null) && (task_ds.get(position).data.length > 0)) {
-                service.getTasksByCalendarId(true, task_ds.get(position).data.length, start, end, calendar.getId(), callback2);
+                connector.getService().getTasksByCalendarId(true, task_ds.get(position).data.length, start, end, calendar.getId(), callback2);
               } else {
-                service.getTasksByCalendarId(true, 0, start, end, calendar.getId(), callback2);
+                connector.getService().getTasksByCalendarId(true, 0, start, end, calendar.getId(), callback2);
               }
             }
           }
@@ -176,6 +217,6 @@ public class WeekViewActivity extends AppCompatActivity {
 
       }
     };
-    service.getCalendars(true, 0, callback); //calendar loading starts here
+    connector.getService().getCalendars(true, 0, callback); //calendar loading starts here
   }
 }

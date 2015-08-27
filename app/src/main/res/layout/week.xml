@@ -9,6 +9,7 @@
     android:orientation="vertical"
     android:background="#000000">
     <org.exoplatform.android.calendar.ui.VerticalTextView
+      android:id="@+id/previous_week"
       android:background="#000000"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -29,6 +30,7 @@
       android:textScaleX="3"/>
 
     <org.exoplatform.android.calendar.ui.VerticalTextView
+      android:id="@+id/next_week"
       android:background="#000000"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
