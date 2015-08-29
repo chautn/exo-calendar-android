@@ -3,4 +3,17 @@
 
   <string name="hello_world">Hello world!</string>
   <string name="action_settings">Settings</string>
+  <!-- Some namespaces should be used:
+    1. No namespace, e.g. cancel, used for very common and short labels and messages.
+    2. Name space "confirm", e.g. "confirm.delete.calendar", used for confirmation messages.
+    3. ...
+  -->
+  <!-- COMMON -->
+  <string name="cancel">Cancel</string>
+  <string name="save">Save</string>
+
+  <!-- CONFIRM -->
+  <string name="confirm.delete.calendar">Delete the calendar?</string>
+  <string name="confirm.delete.event">Delete the event?</string>
+  <string name="confirm.delete.task">Delete the task?</string>
 </resources>
