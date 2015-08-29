@@ -6,7 +6,18 @@
   android:layout_height="match_parent"
   android:layout_width="match_parent"
   android:background="#ECEFF1">
-  <include layout="@layout/toolbar" />
+  <android.support.v7.widget.Toolbar
+    android:id="@+id/calendar_toolbar"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:minHeight="?android:attr/actionBarSize"
+    android:background="#0000FF">
+    <TextView
+      android:id="@+id/calendar_timezone"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:hint="timezone"/>
+  </android.support.v7.widget.Toolbar>
 <!--
   <LinearLayout
     android:orientation="horizontal"

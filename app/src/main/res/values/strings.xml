@@ -1,5 +1,8 @@
 <resources>
   <string name="app_name">XCalendar</string>
+  <string name="activity_label.calendar">eXo calendars</string>
+  <string name="activity_label.week">eXo calendars</string>
+  <string name="activity_label.day">eXo calendars</string>
 
   <string name="hello_world">Hello world!</string>
   <string name="action_settings">Settings</string>
@@ -11,6 +14,7 @@
   <!-- COMMON -->
   <string name="cancel">Cancel</string>
   <string name="save">Save</string>
+  <string name="your_timezone_is">Your timezone</string>
 
   <!-- CONFIRM -->
   <string name="confirm.delete.calendar">Delete the calendar?</string>

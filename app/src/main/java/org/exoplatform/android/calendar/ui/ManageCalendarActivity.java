@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +23,8 @@ import org.exoplatform.calendar.client.model.ParsableList;
 import org.exoplatform.calendar.client.rest.ExoCalendarConnector;
 import org.exoplatform.calendar.client.rest.ExoCalendarRestService;
 
+import java.util.TimeZone;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -33,17 +36,27 @@ public class ManageCalendarActivity extends AppCompatActivity {
 
   public RecyclerView calendar_list_view;
   public RecyclerView.LayoutManager layoutManager;
-  ParsableList<ExoCalendar> calendar_ds = new ParsableList<ExoCalendar>();
+  public ParsableList<ExoCalendar> calendar_ds = new ParsableList<ExoCalendar>();
   int return_size = 0;
-  ExoCalendarConnector connector;
-  CalendarAdapter adapter;
+  public ExoCalendarConnector connector;
+  public CalendarAdapter adapter;
+
+  public ActionBar actionBar;
+  public Toolbar toolbar;
+  public TextView timezoneView;
 
 
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.manage_calendar_activity);
-    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar1);
+    Toolbar toolbar = (Toolbar) findViewById(R.id.calendar_toolbar);
+    timezoneView = (TextView) findViewById(R.id.calendar_timezone);
     setSupportActionBar(toolbar);
+    ActionBar bar = getSupportActionBar();
+    bar.setDisplayShowTitleEnabled(false);
+
+    TimeZone timeZone = TimeZone.getDefault();
+    timezoneView.setText(getString(R.string.your_timezone_is) + ": " + timeZone.getDisplayName(false, TimeZone.SHORT));
 
     calendar_list_view = (RecyclerView) findViewById(R.id.calendar_list_view);
 
@@ -85,11 +98,12 @@ public class ManageCalendarActivity extends AppCompatActivity {
     int id = item.getItemId();
     switch (id) {
       case R.id.this_week:
-        Intent intent = new Intent(this, WeekViewActivity.class);
-        startActivity(intent);
+        Intent intent_w = new Intent(this, WeekViewActivity.class);
+        startActivity(intent_w);
         return true;
       case R.id.today:
-        //start day view activity
+        Intent intent_d = new Intent(this, DayViewActivity.class);
+        startActivity(intent_d);
         return true;
       case R.id.create_calendar:
         createCalendar();

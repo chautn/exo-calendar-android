@@ -10,7 +10,7 @@
     android:theme="@style/AppTheme">
     <activity
       android:name="org.exoplatform.android.calendar.ui.ManageCalendarActivity"
-      android:label="Manage calendars" >
+      android:label="@string/activity_label.calendar" >
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
 
@@ -19,6 +19,10 @@
     </activity>
     <activity
       android:name="org.exoplatform.android.calendar.ui.WeekViewActivity"
+      android:label="Weekies" >
+    </activity>
+    <activity
+      android:name="org.exoplatform.android.calendar.ui.DayViewActivity"
       android:label="Weekies" >
     </activity>
     <activity
