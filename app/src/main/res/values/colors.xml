@@ -6,7 +6,8 @@
   -->
   <!-- 1. Colors defined by hex code -->
   <color name="white">#ffffff</color>
+  <color name="black">#000000</color>
 
   <!-- 2. Colors defined by reference -->
-  <color name="recyclerview_background">@color/white</color>
+  <color name="recyclerview_background">@color/black</color>
 </resources>

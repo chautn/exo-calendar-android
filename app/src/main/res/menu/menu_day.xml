@@ -1,0 +1,16 @@
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  tools:context="org.exoplatform.android.calendar.ui.DayViewActivity">
+  <item
+    android:id="@+id/create_event"
+    android:title="(+E)"
+    android:orderInCategory="100"
+    app:showAsAction="ifRoom"/>
+  <item
+    android:id="@+id/create_task"
+    android:title="(+T)"
+    android:orderInCategory="100"
+    app:showAsAction="ifRoom"/>
+</menu>

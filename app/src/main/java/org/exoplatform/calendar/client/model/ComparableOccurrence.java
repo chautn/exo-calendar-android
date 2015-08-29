@@ -26,9 +26,15 @@ public abstract class ComparableOccurrence implements Comparable<ComparableOccur
   }
 
   public String getEndAMPM() {
-    Date date = getEndDate();
     return (new SimpleDateFormat("h:mma")).format(getEndDate());
   }
 
   public abstract String getTitle();
+
+  public String getStart24() {
+    return (new SimpleDateFormat("hh:mm").format(getStartDate()));
+  }
+  public String getEnd24() {
+    return (new SimpleDateFormat("hh:mm").format(getEndDate()));
+  }
 }
