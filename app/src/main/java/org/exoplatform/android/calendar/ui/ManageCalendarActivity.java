@@ -48,7 +48,7 @@ public class ManageCalendarActivity extends AppCompatActivity {
 
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.manage_calendar_activity);
+    setContentView(R.layout.calendar_activity);
     Toolbar toolbar = (Toolbar) findViewById(R.id.calendar_toolbar);
     timezoneView = (TextView) findViewById(R.id.calendar_timezone);
     setSupportActionBar(toolbar);
@@ -89,7 +89,7 @@ public class ManageCalendarActivity extends AppCompatActivity {
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.menu1, menu);
+    getMenuInflater().inflate(R.menu.menu_calendar, menu);
     return true;
   }
 

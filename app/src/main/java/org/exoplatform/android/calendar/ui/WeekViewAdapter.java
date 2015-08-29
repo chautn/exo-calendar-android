@@ -1,6 +1,7 @@
 package org.exoplatform.android.calendar.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,7 +37,7 @@ public class WeekViewAdapter extends RecyclerView.Adapter<WeekViewAdapter.ViewHo
   }
 
   public WeekViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    CardView itemLayoutView = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.week_day_card, parent, false);
+    CardView itemLayoutView = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.week_card, parent, false);
     itemLayoutView.setLayoutParams(new CardView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, parent.getHeight() / 7));
     ViewHolder holder = new ViewHolder(itemLayoutView);
     return holder;
@@ -56,7 +57,7 @@ public class WeekViewAdapter extends RecyclerView.Adapter<WeekViewAdapter.ViewHo
     if ((list != null) && (list.size() > 0)) {
       int length = list.size();
       for (int i = 0; ((i < 3) && (i < length)); i++) {
-        LinearLayout occurrence_layout = (LinearLayout) LayoutInflater.from(this.context).inflate(R.layout.w_occurrence_layout, null);
+        LinearLayout occurrence_layout = (LinearLayout) LayoutInflater.from(this.context).inflate(R.layout.week_card_dynamic_item, null);
         TextView occurrence_start = (TextView) occurrence_layout.findViewById(R.id.occurrence_start);
         occurrence_start.setText(list.get(i).getStartAMPM());
         TextView occurrence_title = (TextView) occurrence_layout.findViewById(R.id.occurrence_title);
@@ -69,6 +70,15 @@ public class WeekViewAdapter extends RecyclerView.Adapter<WeekViewAdapter.ViewHo
         holder.occurrence_number_view.setText("+" + Integer.toString(length - 3));
       }
     }
+    //set onclick for card view
+    holder.week_day_card.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(context, DayViewActivity.class);
+        intent.putExtra("date", week.get(position).getTime());
+        context.startActivity(intent);
+      }
+    });
   }
 
   public int getItemCount() {
