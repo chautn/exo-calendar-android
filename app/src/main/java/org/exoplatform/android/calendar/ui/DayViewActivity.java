@@ -143,7 +143,7 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
   }
 
   public void reset() {
-    calendar_ds = null;
+    calendar_ds = new ParsableList<ExoCalendar>();
     event_ds = new ParsableList<Event>();
     task_ds = new ParsableList<Task>();
     occurrences = new ArrayList<ComparableOccurrence>();
