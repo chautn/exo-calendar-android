@@ -26,8 +26,6 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.ViewHold
   public ExoCalendarConnector connector;
   public Context context;
 
-  private int selectedPos = 0;
-
   public DayViewAdapter(Context context, ExoCalendarConnector connector, Date date, List<ComparableOccurrence> occurrences) {
     this.context = context;
     this.connector = connector;
@@ -37,11 +35,17 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.ViewHold
 
   public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     CardView cardView = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.day_card, parent, false);
-    ViewHolder holder = new ViewHolder(cardView);
+    final ViewHolder holder = new ViewHolder(cardView);
+    cardView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        ((DayViewActivity) context).onItemClick(holder.getPosition());
+      }
+    });
     return holder;
   }
 
-  public void onBindViewHolder(ViewHolder holder, int position) {
+  public void onBindViewHolder(ViewHolder holder, final int position) {
     holder.startView.setText(occurrences.get(position).getStart24());
     holder.endView.setText(occurrences.get(position).getEnd24());
     if (occurrences.get(position).getTitle().length() > 50) {
@@ -49,19 +53,6 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.ViewHold
     } else {
       holder.titleView.setText(occurrences.get(position).getTitle());
     }
-    //try with selected item
-    holder.cardView.setSelected(selectedPos == position);
-    holder.cardView.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        notifyItemChanged(selectedPos);
-        selectedPos = getLayo
-      }
-    });
-  }
-
-  public void onBindViewHolder(WeekViewAdapter.ViewHolder holder, int position) {
-    //
   }
 
   public int getItemCount() {
@@ -74,8 +65,6 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.ViewHold
     public TextView startView;
     public TextView endView;
     public TextView titleView;
-    //public TextView descriptionView;
-    //public Button delete_btn;
 
     public ViewHolder(View itemLayoutView) {
       super(itemLayoutView);
@@ -83,7 +72,6 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.ViewHold
       startView = (TextView) itemLayoutView.findViewById(R.id.day_card_start);
       endView = (TextView) itemLayoutView.findViewById(R.id.day_card_end);
       titleView = (TextView) itemLayoutView.findViewById(R.id.day_card_title);
-      //descriptionView = (TextView) itemLayoutView.findViewById(R.id.day_card_description);
     }
   }
 }

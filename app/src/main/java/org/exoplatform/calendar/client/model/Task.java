@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * Created by chautn on 8/25/15.
  */
-public class Task extends ComparableOccurrence implements Identifiable {
+public class Task extends ComparableOccurrence {
 
   public String to;
   public String[] attachments;

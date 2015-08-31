@@ -1,6 +1,7 @@
 package org.exoplatform.android.calendar.ui;
 
 import android.app.AlertDialog;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,7 +39,7 @@ import retrofit.client.Response;
 /**
  * Created by chautn on 8/28/15.
  */
-public class DayViewActivity extends AppCompatActivity {
+public class DayViewActivity extends AppCompatActivity implements OccurrenceViewFragment.CommunicationInterface {
 
   public Date date;
   public ParsableList<ExoCalendar> calendar_ds;
@@ -284,5 +285,37 @@ public class DayViewActivity extends AppCompatActivity {
 
   public void createCalendar() {
 
+  }
+
+  //Implements CommunicationInterface
+  public ExoCalendarConnector getConnector() {
+    return connector;
+  }
+  public List<ComparableOccurrence> getOccurrenceList() {
+    return occurrences;
+  }
+  public void onItemDeleted(int position, String id) {
+    occurrences.remove(position);
+    adapter.notifyItemRemoved(position);
+    OccurrenceViewFragment fragment = (OccurrenceViewFragment) getFragmentManager().findFragmentById(R.id.day_fragment_container);
+    if (fragment != null) {
+      getFragmentManager().beginTransaction().remove(fragment).commit();
+    }
+  }
+  public void onItemUpdated(int position, String id, ComparableOccurrence item) {
+    occurrences.set(position, item);
+    adapter.notifyItemChanged(position);
+  }
+
+  //Item click
+  public void onItemClick(int position) {
+    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+    OccurrenceViewFragment fragment = new OccurrenceViewFragment();
+    Bundle args = new Bundle();
+    args.putInt("position", position);
+    fragment.setArguments(args);
+    fragmentTransaction.replace(R.id.day_fragment_container, fragment);
+    fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+    fragmentTransaction.commit();
   }
 }

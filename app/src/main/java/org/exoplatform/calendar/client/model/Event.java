@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * Created by chautn on 8/17/15.
  */
-public class Event extends ComparableOccurrence implements Identifiable {
+public class Event extends ComparableOccurrence {
 
   public String to;
   public String[] attachments;

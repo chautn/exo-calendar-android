@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by chautn on 8/17/15.
  */
-public abstract class ComparableOccurrence implements Comparable<ComparableOccurrence> {
+public abstract class ComparableOccurrence implements Comparable<ComparableOccurrence>, Identifiable {
 
   public static final String iso8601dateformat = "yyyy-MM-dd'T'HH:mm:ssZ";
 

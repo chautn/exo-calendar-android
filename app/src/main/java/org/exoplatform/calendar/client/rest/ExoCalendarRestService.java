@@ -20,6 +20,7 @@ import retrofit.http.Query;
  */
 public interface ExoCalendarRestService {
 
+  // Calendar GET, GET, POST, PUT, DELETE
   @GET("/calendars")
   void getCalendars(@Query("returnSize") boolean returnSize, @Query("offset") int offset, Callback<ParsableList<ExoCalendar>> callback);
 
@@ -35,6 +36,7 @@ public interface ExoCalendarRestService {
   @DELETE("/calendars/{calendar_id}")
   void deleteCalendarById(@Path("calendar_id") String calendar_id, Callback<Response> callback);
 
+  // Event GET, PUT, DELETE
   @GET("/calendars/{calendar_id}/events")
   void getEventsByCalendarId(@Query("returnSize") boolean returnSize,
                              @Query("offset") int offset,
@@ -43,6 +45,13 @@ public interface ExoCalendarRestService {
                              @Path("calendar_id") String calendar_id,
                              Callback<ParsableList<Event>> callback);
 
+  @PUT("/events/{event_id}")
+  void updateEventById(@Body Event event, @Path("event_id") String id, Callback<Response> callback);
+
+  @DELETE("/events/{event_id}")
+  void deleteEventById(@Path("event_id") String id, Callback<Response> callback);
+
+  // Task GET, PUT, DELETE
   @GET("/calendars/{calendar_id}/tasks")
   void getTasksByCalendarId(@Query("returnSize") boolean returnSize,
                              @Query("offset") int offset,
@@ -50,4 +59,10 @@ public interface ExoCalendarRestService {
                              @Query("endTime") String end,
                              @Path("calendar_id") String calendar_id,
                              Callback<ParsableList<Task>> callback);
+
+  @PUT("/tasks/{task_id}")
+  void updateTaskById(@Body Task task, @Path("task_id") String id, Callback<Response> callback);
+
+  @DELETE("/tasks/{task_id}")
+  void deleteTaskById(@Path("task_id") String id, Callback<Response> callback);
 }
