@@ -147,6 +147,9 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
     event_ds = new ParsableList<Event>();
     task_ds = new ParsableList<Task>();
     occurrences = new ArrayList<ComparableOccurrence>();
+    adapter = new DayViewAdapter(this, connector, date, occurrences);
+    recyclerView.setAdapter(adapter);
+    removeFragment();
   }
 
   public void download() {
@@ -317,5 +320,11 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
     fragmentTransaction.replace(R.id.day_fragment_container, fragment);
     fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
     fragmentTransaction.commit();
+  }
+  public void removeFragment() {
+    OccurrenceViewFragment fragment = (OccurrenceViewFragment) getFragmentManager().findFragmentById(R.id.day_fragment_container);
+    if (fragment != null) {
+      getFragmentManager().beginTransaction().remove(fragment).commit();
+    }
   }
 }
