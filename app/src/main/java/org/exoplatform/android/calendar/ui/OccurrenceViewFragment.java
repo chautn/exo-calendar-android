@@ -37,14 +37,14 @@ public class OccurrenceViewFragment extends Fragment {
   public static final int EDIT_TASK = 2;
 
   public TextView textView;
-  Button edit, delete;
+  public TextView edit, delete;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View fragmentLayout = inflater.inflate(R.layout.fragment_occurrence, container, false);
     textView = (TextView) fragmentLayout.findViewById(R.id.fragment_occurrence_title);
-    edit = (Button) fragmentLayout.findViewById(R.id.fragment_occurrence_edit);
-    delete = (Button) fragmentLayout.findViewById(R.id.fragment_occurrence_delete);
+    edit = (TextView) fragmentLayout.findViewById(R.id.fragment_occurrence_edit);
+    delete = (TextView) fragmentLayout.findViewById(R.id.fragment_occurrence_delete);
 
     final List<ComparableOccurrence> list = ((CommunicationInterface) getActivity()).getOccurrenceList();
     final int position = getArguments().getInt("position");

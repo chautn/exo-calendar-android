@@ -315,7 +315,7 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
     args.putInt("position", position);
     fragment.setArguments(args);
     fragmentTransaction.replace(R.id.day_fragment_container, fragment);
-    fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+    fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
     fragmentTransaction.commit();
   }
 }
