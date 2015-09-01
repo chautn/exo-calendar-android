@@ -25,7 +25,7 @@ import retrofit.client.Response;
 public class EditEventActivity extends AppCompatActivity {
 
   public TextView textView;
-  public Button cancel, save;
+  public TextView cancel, save;
 
   public Event event;
   public String id;
@@ -37,8 +37,8 @@ public class EditEventActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.event);
     setView();
-    cancel = (Button) findViewById(R.id.event_cancel);
-    save = (Button) findViewById(R.id.event_save);
+    cancel = (TextView) findViewById(R.id.event_cancel);
+    save = (TextView) findViewById(R.id.event_save);
 
     connector = ((ExoCalendarApp) getApplicationContext()).getConnector();
     String itemJson = getIntent().getStringExtra("itemJson");

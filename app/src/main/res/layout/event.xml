@@ -4,19 +4,78 @@
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
-  <EditText
-    android:id="@+id/event_subject"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
+  <TableLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:shrinkColumns="*"
+    android:stretchColumns="1">
+
+    <TableRow>
+      <TextView
+        android:text="*Title:"
+        android:padding="5dip" />
+      <EditText
+        android:id="@+id/event_subject"
+        android:singleLine="true"/>
+    </TableRow>
+    <TableRow>
+      <TextView
+        android:text="Description:"
+        android:padding="5dip"/>
+      <EditText
+        android:id="@+id/event_description"
+        android:maxLines="5"
+        android:lines="3"/>
+    </TableRow>
+    <TableRow>
+      <TextView
+        android:text="From:"
+        android:padding="5dip"/>
+      <EditText
+        android:id="@+id/event_from_date"
+        android:hint="MM/dd/yyyy"/>
+      <Spinner
+        android:id="@+id/event_from_time"/>
+    </TableRow>
+    <TableRow>
+      <TextView
+        android:text="To:"
+        android:padding="5dip"/>
+      <EditText
+        android:id="@+id/event_to_date"
+        android:hint="MM/dd/yyyy"/>
+      <Spinner
+        android:id="@+id/event_to_time"/>
+    </TableRow>
+  </TableLayout>
   <Button
-    android:id="@+id/event_cancel"
+    android:text="test"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Cancel"/>
-  <Button
-    android:id="@+id/event_save"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Save"/>
+    android:onClick="test"/>
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="30dp"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:background="#0000ff">
+    <TextView
+      android:id="@+id/event_cancel"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:text="cancel"
+      android:gravity="center"
+      android:paddingRight="6dp"
+      android:textColor="#ffffff"/>
+    <TextView
+      android:id="@+id/event_save"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:text="save"
+      android:gravity="center"
+      android:paddingLeft="6dp"
+      android:textColor="#ffffff"/>
+  </LinearLayout>
 
 </LinearLayout>

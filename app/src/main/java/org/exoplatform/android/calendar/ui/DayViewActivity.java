@@ -41,6 +41,11 @@ import retrofit.client.Response;
  */
 public class DayViewActivity extends AppCompatActivity implements OccurrenceViewFragment.CommunicationInterface {
 
+  public static final int CREATE_CALENDAR = 1;
+  public static final int CREATE_CATEGORY = 2;
+  public static final int CREATE_EVENT = 3;
+  public static final int CREATE_TASK = 4;
+
   public Date date;
   public ParsableList<ExoCalendar> calendar_ds;
   public ParsableList<Event> event_ds;
@@ -277,8 +282,9 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
       });
       builder.show();
     } else {
-      //Intent intent = new Intent(DayViewActivity.this, EventActivity.class);
-      //startActivity(intent);
+      Intent intent = new Intent(DayViewActivity.this, NewEventActivity.class);
+      intent.putExtra("date", date.getTime());
+      startActivityForResult(intent, CREATE_EVENT);
     }
   }
 

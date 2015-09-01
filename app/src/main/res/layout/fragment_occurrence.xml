@@ -19,17 +19,17 @@
       android:id="@+id/fragment_occurrence_edit"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
-      android:text="(U)"
+      android:text="update"
       android:gravity="center"
-      android:textSize="18sp"
+      android:paddingRight="6dp"
       android:textColor="#ffffff"/>
     <TextView
       android:id="@+id/fragment_occurrence_delete"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
-      android:text="(D)"
+      android:text="remove"
       android:gravity="center"
-      android:textSize="18sp"
+      android:paddingLeft="6dp"
       android:textColor="#ffffff"/>
   </LinearLayout>
 </LinearLayout>
