@@ -18,10 +18,12 @@ import com.google.gson.Gson;
 import org.exoplatform.android.calendar.R;
 import org.exoplatform.calendar.client.model.ComparableOccurrence;
 import org.exoplatform.calendar.client.model.Event;
+import org.exoplatform.calendar.client.model.ExoCalendar;
 import org.exoplatform.calendar.client.model.Task;
 import org.exoplatform.calendar.client.rest.ExoCalendarConnector;
 import org.exoplatform.calendar.client.rest.ExoCalendarRestService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Callback;
@@ -98,6 +100,11 @@ public class OccurrenceViewFragment extends Fragment {
       public void onClick(View v) {
         Gson gson = ((CommunicationInterface) getActivity()).getConnector().gson;
         String occurrenceJson = gson.toJson(occurrence);
+        ArrayList<ExoCalendar> calendarList = ((CommunicationInterface) getActivity()).getCalendarList();
+        ArrayList<String> calendarJsonList = new ArrayList<String>();
+        for (ExoCalendar calendar : calendarList) {
+          calendarJsonList.add(gson.toJson(calendar));
+        }
         if (occurrence instanceof Task) {
           Intent intent = new Intent(getActivity(), EditTaskActivity.class);
           intent.putExtra("itemJson", occurrenceJson);
@@ -106,9 +113,11 @@ public class OccurrenceViewFragment extends Fragment {
           startActivityForResult(intent, EDIT_TASK);
         } else {
           Intent intent = new Intent(getActivity(), EditEventActivity.class);
-          intent.putExtra("itemJson", occurrenceJson);
-          intent.putExtra("position", position);
-          intent.putExtra("id", id);
+          intent.putStringArrayListExtra(EditEventActivity.RECEIVED_INTENT_KEY_CALENDAR_JSON_LIST, calendarJsonList);
+          intent.putExtra(EditEventActivity.RECEIVED_INTENT_KEY_EVENT_JSON, occurrenceJson);
+          intent.putExtra(EditEventActivity.RECEIVED_INTENT_KEY_POSITION, position);
+          intent.putExtra(EditEventActivity.RECEIVED_INTENT_KEY_EVENT_ID, id);
+          intent.putExtra(EditEventActivity.RECEIVED_INTENT_KEY_DATE, occurrence.getStartDate().getTime());
           startActivityForResult(intent, EDIT_EVENT);
         }
       }
@@ -120,9 +129,10 @@ public class OccurrenceViewFragment extends Fragment {
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (resultCode == Activity.RESULT_OK) {
-      String itemJson = data.getStringExtra("itemJson");
+      String itemJson = data.getStringExtra(EditEventActivity.RETURN_INTENT_KEY_EVENT_JSON);
       Gson gson = ((CommunicationInterface) getActivity()).getConnector().gson;
       ComparableOccurrence item = (requestCode == EDIT_EVENT) ? gson.fromJson(itemJson, Event.class) : gson.fromJson(itemJson, Task.class);
+      //TODO : check if the updated item is still in the day or not
       updateView(getView(), item);
       ((CommunicationInterface) getActivity()).onItemUpdated(getArguments().getInt("position"), item.getId(), item);
     }
@@ -142,6 +152,8 @@ public class OccurrenceViewFragment extends Fragment {
     public void onItemDeleted(int position, String id);
 
     public void onItemUpdated(int position, String id, ComparableOccurrence item);
+
+    public ArrayList<ExoCalendar> getCalendarList();
 
   }
 }

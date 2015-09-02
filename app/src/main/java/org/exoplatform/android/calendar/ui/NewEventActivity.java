@@ -281,7 +281,7 @@ public class NewEventActivity extends AppCompatActivity {
 
   public void onSave() {
     validateOnView();
-    if (isValidatedOnView == true) {
+    if (isValidatedOnView) {
       updateItemFromView(event);
       String calendar_id = calendarIdList.get(spinnerCalendarName.getSelectedItemPosition());
       final String itemJson = connector.gson.toJson(event);

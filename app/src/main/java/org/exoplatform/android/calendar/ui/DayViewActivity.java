@@ -27,6 +27,7 @@ import org.exoplatform.calendar.client.rest.ExoCalendarConnector;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -319,6 +320,9 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
   public void onItemUpdated(int position, String id, ComparableOccurrence item) {
     occurrences.set(position, item);
     adapter.notifyItemChanged(position);
+  }
+  public ArrayList<ExoCalendar> getCalendarList() {
+    return new ArrayList<ExoCalendar>(Arrays.asList(calendar_ds.data));
   }
 
   //Item click
