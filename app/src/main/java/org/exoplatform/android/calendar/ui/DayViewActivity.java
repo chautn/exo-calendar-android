@@ -283,12 +283,12 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
       builder.show();
     } else {
       Intent intent = new Intent(DayViewActivity.this, NewEventActivity.class);
-      intent.putExtra("date", date.getTime());
+      intent.putExtra(NewEventActivity.RECEIVED_INTENT_KEY_DATE, date.getTime());
       ArrayList<String> calendarJsonList = new ArrayList<String>();
       for (ExoCalendar exoCalendar : calendar_ds.data) {
         calendarJsonList.add(connector.gson.toJson(exoCalendar));
       }
-      intent.putStringArrayListExtra("calendarJsonList", calendarJsonList);
+      intent.putStringArrayListExtra(NewEventActivity.RECEIVED_INTENT_KEY_CALENDAR_JSON_LIST, calendarJsonList);
       startActivityForResult(intent, CREATE_EVENT);
     }
   }

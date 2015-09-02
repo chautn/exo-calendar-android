@@ -38,6 +38,18 @@ import retrofit.client.Response;
  */
 public class NewEventActivity extends AppCompatActivity {
 
+  /**
+   * This activity lives a short life and is designed to be called by others activities.
+   * The calling activities must send a calendar list in Json.
+   * Optionally the calling activity may send a "date" that might be used to set a default "from" date of new event.
+   * This activity, on success, returns data of created event so that the calling activity can update its view.
+   */
+  public static final String RECEIVED_INTENT_KEY_CALENDAR_JSON_LIST = "calendarJsonList";
+  public static final String RECEIVED_INTENT_KEY_DATE = "date";
+  public static final String RETURNED_INTENT_KEY_DATE = "date";
+  public static final String RETURNED_INTENT_KEY_EVENT_JSON = "itemJson";
+  public static final String RETURNED_INTENT_KEY_EVENT_ID = "itemId";
+
   public EditText editTextTitle, editTextDescription;
   public TextView cancel, save;
   public EditText editTextFromDate, editTextToDate;
@@ -61,7 +73,7 @@ public class NewEventActivity extends AppCompatActivity {
     /**
      * This implementation uses offline Calendar list which must be passed from calling activities (e.g DayViewActivity).
      */
-    calendarJsonList = getIntent().getStringArrayListExtra("calendarJsonList");
+    calendarJsonList = getIntent().getStringArrayListExtra(NewEventActivity.RECEIVED_INTENT_KEY_CALENDAR_JSON_LIST);
     calendarNameList = new ArrayList<String>();
     calendarIdList = new ArrayList<String>();
     for (String calendarJson : calendarJsonList) {
@@ -277,7 +289,7 @@ public class NewEventActivity extends AppCompatActivity {
         @Override
         public void success(Response response, Response response2) {
           Intent intent = new Intent();
-          intent.putExtra("itemJson", itemJson);
+          intent.putExtra(NewEventActivity.RETURNED_INTENT_KEY_EVENT_JSON, itemJson);
           intent.putExtra("date", event.getStartDate().getTime());
           setResult(RESULT_OK, intent);
           finish();
