@@ -175,8 +175,9 @@ public class EditEventActivity extends AppCompatActivity {
     String to_ = (new SimpleDateFormat("hh:mm")).format(event.getEndDate());
     spinnerFromTime.setSelection(((ArrayAdapter<CharSequence>) spinnerFromTime.getAdapter()).getPosition(from_));
     spinnerToTime.setSelection(((ArrayAdapter<CharSequence>) spinnerFromTime.getAdapter()).getPosition(to_));
-
-    //TODO : set calendar spinner selection
+    
+    String calendar_id = event.getCalendarId();
+    spinnerCalendarName.setSelection(((ArrayAdapter<CharSequence>) spinnerCalendarName.getAdapter()).getPosition(calendar_id));
   }
 
   public void updateItemFromView(Event event) {
@@ -328,6 +329,9 @@ public class EditEventActivity extends AppCompatActivity {
   }
 
   public void test(View view) {
-    spinnerCalendarName.setSelection(1);
+    String s = event.getCalendar();
+    System.out.println(event.getCalendar());
+    String ss = s.substring(s.lastIndexOf("/") +1);
+    System.out.println(ss);
   }
 }

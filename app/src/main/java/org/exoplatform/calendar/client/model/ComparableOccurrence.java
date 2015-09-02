@@ -37,4 +37,9 @@ public abstract class ComparableOccurrence implements Comparable<ComparableOccur
   public String getEnd24() {
     return (new SimpleDateFormat("hh:mm").format(getEndDate()));
   }
+
+  public abstract String getCalendar();
+  public String getCalendarId() {
+    return getCalendar().substring(getCalendar().lastIndexOf("/") +1);
+  }
 }
