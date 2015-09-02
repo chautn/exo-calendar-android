@@ -48,6 +48,13 @@
       <Spinner
         android:id="@+id/event_to_time"/>
     </TableRow>
+    <TableRow>
+      <TextView
+        android:text="Calendar:"
+        android:padding="5dip"/>
+      <Spinner
+        android:id="@+id/event_calendar_name"/>
+    </TableRow>
   </TableLayout>
   <Button
     android:text="test"

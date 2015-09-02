@@ -45,8 +45,8 @@ public interface ExoCalendarRestService {
                              @Path("calendar_id") String calendar_id,
                              Callback<ParsableList<Event>> callback);
 
-  @POST("/events")
-  void createEvent(@Body Event event, Callback<Response> callback);
+  @POST("/calendars/{calendar_id}/events")
+  void createEvent(@Body Event event, @Path("calendar_id") String id, Callback<Response> callback);
 
   @PUT("/events/{event_id}")
   void updateEventById(@Body Event event, @Path("event_id") String id, Callback<Response> callback);
@@ -54,7 +54,7 @@ public interface ExoCalendarRestService {
   @DELETE("/events/{event_id}")
   void deleteEventById(@Path("event_id") String id, Callback<Response> callback);
 
-  // Task GET, PUT, DELETE
+  // Task GET, POST, PUT, DELETE
   @GET("/calendars/{calendar_id}/tasks")
   void getTasksByCalendarId(@Query("returnSize") boolean returnSize,
                              @Query("offset") int offset,
@@ -62,6 +62,9 @@ public interface ExoCalendarRestService {
                              @Query("endTime") String end,
                              @Path("calendar_id") String calendar_id,
                              Callback<ParsableList<Task>> callback);
+
+  @POST("/calendars/{calendar_id}/tasks")
+  void createTask(@Body Task task, @Path("calendar_id") String id, Callback<Response> callback);
 
   @PUT("/tasks/{task_id}")
   void updateTaskById(@Body Task task, @Path("task_id") String id, Callback<Response> callback);
