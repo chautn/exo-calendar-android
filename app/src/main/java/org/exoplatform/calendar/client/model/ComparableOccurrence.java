@@ -32,10 +32,10 @@ public abstract class ComparableOccurrence implements Comparable<ComparableOccur
   public abstract String getTitle();
 
   public String getStart24() {
-    return (new SimpleDateFormat("hh:mm").format(getStartDate()));
+    return (new SimpleDateFormat("HH:mm").format(getStartDate()));
   }
   public String getEnd24() {
-    return (new SimpleDateFormat("hh:mm").format(getEndDate()));
+    return (new SimpleDateFormat("HH:mm").format(getEndDate()));
   }
 
   public abstract String getCalendar();

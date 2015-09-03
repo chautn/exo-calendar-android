@@ -171,11 +171,11 @@ public class EditEventActivity extends AppCompatActivity {
     editTextToDate.setText((new SimpleDateFormat("MM/dd/yyyy")).format(event.getEndDate()));
 
     //TODO : need to prevent invalid data (like 00:11) from causing problem
-    String from_ = (new SimpleDateFormat("hh:mm")).format(event.getStartDate());
-    String to_ = (new SimpleDateFormat("hh:mm")).format(event.getEndDate());
+    String from_ = (new SimpleDateFormat("HH:mm")).format(event.getStartDate());
+    String to_ = (new SimpleDateFormat("HH:mm")).format(event.getEndDate());
     spinnerFromTime.setSelection(((ArrayAdapter<CharSequence>) spinnerFromTime.getAdapter()).getPosition(from_));
     spinnerToTime.setSelection(((ArrayAdapter<CharSequence>) spinnerFromTime.getAdapter()).getPosition(to_));
-    
+
     String calendar_id = event.getCalendarId();
     spinnerCalendarName.setSelection(((ArrayAdapter<CharSequence>) spinnerCalendarName.getAdapter()).getPosition(calendar_id));
   }
@@ -187,8 +187,8 @@ public class EditEventActivity extends AppCompatActivity {
     String fromDateTime = editTextFromDate.getText().toString() + "T" + spinnerFromTime.getSelectedItem().toString();
     Date from_, to_;
     try {
-      from_ = (new SimpleDateFormat("MM/dd/yyyy'T'hh:mm")).parse(fromDateTime);
-      to_ = (new SimpleDateFormat("MM/dd/yyyy'T'hh:mm")).parse(toDateTime);
+      from_ = (new SimpleDateFormat("MM/dd/yyyy'T'HH:mm")).parse(fromDateTime);
+      to_ = (new SimpleDateFormat("MM/dd/yyyy'T'HH:mm")).parse(toDateTime);
       event.setFrom((new SimpleDateFormat(ComparableOccurrence.iso8601dateformat)).format(from_));
       event.setTo((new SimpleDateFormat(ComparableOccurrence.iso8601dateformat)).format(to_));
     } catch (Exception e) {}
@@ -245,8 +245,8 @@ public class EditEventActivity extends AppCompatActivity {
     String toDateTime = editTextToDate.getText().toString() + "T" + spinnerToTime.getSelectedItem().toString();
     String fromDateTime = editTextFromDate.getText().toString() + "T" + spinnerFromTime.getSelectedItem().toString();
     try {
-      Date from = (new SimpleDateFormat("MM/dd/yyyy'T'hh:mm")).parse(fromDateTime);
-      Date to = (new SimpleDateFormat("MM/dd/yyyy'T'hh:mm")).parse(toDateTime);
+      Date from = (new SimpleDateFormat("MM/dd/yyyy'T'HH:mm")).parse(fromDateTime);
+      Date to = (new SimpleDateFormat("MM/dd/yyyy'T'HH:mm")).parse(toDateTime);
       if (!from.before(to)) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("'To' must be later than 'From'");
@@ -329,9 +329,8 @@ public class EditEventActivity extends AppCompatActivity {
   }
 
   public void test(View view) {
-    String s = event.getCalendar();
-    System.out.println(event.getCalendar());
-    String ss = s.substring(s.lastIndexOf("/") +1);
-    System.out.println(ss);
+    System.out.println(event.getEndDate());
+    System.out.println(event.getEnd24());
+    System.out.println(event.getEndAMPM());
   }
 }

@@ -28,16 +28,16 @@ import java.util.Locale;
  * Created by The eXo Platform SAS Author : Peter Nedonosko
  * peter.nedonosko@exoplatform.com.ua 05.07.2007 ISO 8601 standard Year: YYYY
  * (eg 1997) Year and month: YYYY-MM (eg 1997-07) Complete date: YYYY-MM-DD (eg
- * 1997-07-16) Complete date plus hours and minutes: YYYY-MM-DDThh:mmTZD (eg
+ * 1997-07-16) Complete date plus hours and minutes: YYYY-MM-DDTHH:mmTZD (eg
  * 1997-07-16T19:20+01:00) Complete date plus hours, minutes and seconds:
- * YYYY-MM-DDThh:mm:ssTZD (eg 1997-07-16T19:20:30+01:00) Complete date plus
+ * YYYY-MM-DDTHH:mm:ssTZD (eg 1997-07-16T19:20:30+01:00) Complete date plus
  * hours, minutes, seconds and a decimal fraction of a second
- * YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00) where: YYYY =
+ * YYYY-MM-DDTHH:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00) where: YYYY =
  * four-digit year MM = two-digit month (01=January, etc.) DD = two-digit day of
  * month (01 through 31) hh = two digits of hour (00 through 23) (am/pm NOT
  * allowed) mm = two digits of minute (00 through 59) ss = two digits of second
  * (00 through 59) s = one or more digits representing a decimal fraction of a
- * second TZD = time zone designator (Z or +hh:mm or -hh:mm) a RFC 822 time zone
+ * second TZD = time zone designator (Z or +HH:mm or -HH:mm) a RFC 822 time zone
  * is also accepted: For formatting, the RFC 822 4-digit time zone format is
  * used: RFC822TimeZone: Sign TwoDigitHours Minutes TwoDigitHours: Digit Digit
  * like -8000
@@ -72,57 +72,57 @@ public class ISO8601
 
   /**
    * NON ISO STANDARD. Simple date plus hours and minutes, wothout timezone:
-   * YYYY-MM-DDThh:mm (eg 1997-07-16T19:20)
+   * YYYY-MM-DDTHH:mm (eg 1997-07-16T19:20)
    */
   public static final String SIMPLE_DATEHOURSMINUTES_FORMAT = "yyyy-MM-dd'T'HH:mm";
 
   /**
    * NON ISO STANDARD. Complete date plus hours and minutes, with timezone by
-   * RFC822: YYYY-MM-DDThh:mmZ (eg 1997-07-16T19:20+0100)
+   * RFC822: YYYY-MM-DDTHH:mmZ (eg 1997-07-16T19:20+0100)
    */
   public static final String COMPLETE_DATEHOURSMINUTESZRFC822_FORMAT = "yyyy-MM-dd'T'HH:mmZ";
 
   /**
-   * Complete date plus hours and minutes: YYYY-MM-DDThh:mmTZD (eg
+   * Complete date plus hours and minutes: YYYY-MM-DDTHH:mmTZD (eg
    * 1997-07-16T19:20+01:00)
    */
   public static final String COMPLETE_DATEHOURSMINUTESZ_FORMAT = "yyyy-MM-dd'T'HH:mm" + TZD;
 
   /**
    * NON ISO STANDARD. Simple date plus hours, minutes and seconds, wothout
-   * timezone: YYYY-MM-DDThh:mm:ss (eg 1997-07-16T19:20:30)
+   * timezone: YYYY-MM-DDTHH:mm:ss (eg 1997-07-16T19:20:30)
    */
   public static final String SIMPLE_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
   /**
    * NON ISO STANDARD. Complete date plus hours, minutes and seconds, with
-   * timezone by RFC822: YYYY-MM-DDThh:mm:ssZ (eg 1997-07-16T19:20:30+0100)
+   * timezone by RFC822: YYYY-MM-DDTHH:mm:ssZ (eg 1997-07-16T19:20:30+0100)
    */
   public static final String COMPLETE_DATETIMEZRFC822_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 
   /**
-   * Complete date plus hours, minutes and seconds: YYYY-MM-DDThh:mm:ssTZD (eg
+   * Complete date plus hours, minutes and seconds: YYYY-MM-DDTHH:mm:ssTZD (eg
    * 1997-07-16T19:20:30+01:00)
    */
   public static final String COMPLETE_DATETIMEZ_FORMAT = "yyyy-MM-dd'T'HH:mm:ss" + TZD;
 
   /**
    * NON ISO STANDARD. Simple date plus hours, minutes, seconds and a decimal
-   * fraction of a second, wothout timezone YYYY-MM-DDThh:mm:ss.s (eg
+   * fraction of a second, wothout timezone YYYY-MM-DDTHH:mm:ss.s (eg
    * 1997-07-16T19:20:30.45)
    */
   public static final String SIMPLE_DATETIMEMS_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 
   /**
    * Complete date plus hours, minutes, seconds and a decimal fraction of a
-   * second, with timezone by RFC822 YYYY-MM-DDThh:mm:ss.sZ (eg
+   * second, with timezone by RFC822 YYYY-MM-DDTHH:mm:ss.sZ (eg
    * 1997-07-16T19:20:30.45+0100)
    */
   public static final String COMPLETE_DATETIMEMSZRFC822_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
   /**
    * Complete date plus hours, minutes, seconds and a decimal fraction of a
-   * second YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00)
+   * second YYYY-MM-DDTHH:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00)
    */
   public static final String COMPLETE_DATETIMEMSZ_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS" + TZD;
 

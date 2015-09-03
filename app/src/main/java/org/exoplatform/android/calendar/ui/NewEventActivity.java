@@ -172,8 +172,8 @@ public class NewEventActivity extends AppCompatActivity {
     String fromDateTime = editTextFromDate.getText().toString() + "T" + spinnerFromTime.getSelectedItem().toString();
     Date from_, to_;
     try {
-      from_ = (new SimpleDateFormat("MM/dd/yyyy'T'hh:mm")).parse(fromDateTime);
-      to_ = (new SimpleDateFormat("MM/dd/yyyy'T'hh:mm")).parse(toDateTime);
+      from_ = (new SimpleDateFormat("MM/dd/yyyy'T'HH:mm")).parse(fromDateTime);
+      to_ = (new SimpleDateFormat("MM/dd/yyyy'T'HH:mm")).parse(toDateTime);
       event.setFrom((new SimpleDateFormat(ComparableOccurrence.iso8601dateformat)).format(from_));
       event.setTo((new SimpleDateFormat(ComparableOccurrence.iso8601dateformat)).format(to_));
     } catch (Exception e) {}
@@ -230,8 +230,8 @@ public class NewEventActivity extends AppCompatActivity {
     String toDateTime = editTextToDate.getText().toString() + "T" + spinnerToTime.getSelectedItem().toString();
     String fromDateTime = editTextFromDate.getText().toString() + "T" + spinnerFromTime.getSelectedItem().toString();
     try {
-      Date from = (new SimpleDateFormat("MM/dd/yyyy'T'hh:mm")).parse(fromDateTime);
-      Date to = (new SimpleDateFormat("MM/dd/yyyy'T'hh:mm")).parse(toDateTime);
+      Date from = (new SimpleDateFormat("MM/dd/yyyy'T'HH:mm")).parse(fromDateTime);
+      Date to = (new SimpleDateFormat("MM/dd/yyyy'T'HH:mm")).parse(toDateTime);
       if (!from.before(to)) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("'To' must be later than 'From'");
