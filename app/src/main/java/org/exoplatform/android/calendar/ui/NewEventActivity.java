@@ -25,9 +25,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.client.Header;
 import retrofit.client.Response;
 
 /**
@@ -101,6 +103,9 @@ public class NewEventActivity extends AppCompatActivity {
     spinnerToTime = (Spinner) findViewById(R.id.event_to_time);
     spinnerPriority = (Spinner) findViewById(R.id.event_priority);
     spinnerCalendarName = (Spinner) findViewById(R.id.event_calendar_name);
+
+    editTextFromDate.setText((new SimpleDateFormat("MM/dd/yyyy")).format(date));
+    editTextToDate.setText((new SimpleDateFormat("MM/dd/yyyy")).format(date));
 
     editTextFromDate.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -291,6 +296,17 @@ public class NewEventActivity extends AppCompatActivity {
           Intent intent = new Intent();
           intent.putExtra(NewEventActivity.RETURNED_INTENT_KEY_EVENT_JSON, itemJson);
           intent.putExtra(NewEventActivity.RETURNED_INTENT_KEY_DATE, event.getStartDate().getTime());
+          //extract item id
+          String returned_id = "";
+          List<Header> headers = response.getHeaders();
+          for (Header header : headers) {
+            if (header.getName().equals("location")) {
+              String location = header.getValue();
+              returned_id = location.substring((location.lastIndexOf("/")));
+              break;
+            }
+          }
+          intent.putExtra(NewEventActivity.RETURNED_INTENT_KEY_EVENT_ID, returned_id);
           setResult(RESULT_OK, intent);
           finish();
         }

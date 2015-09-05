@@ -45,7 +45,7 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
   public static final int CREATE_EVENT = 1;
   public static final int CREATE_TASK = 2;
 
-  public Date date;
+  private Date date; //this object must be assured to always have hour = minute = second = millisecond = 0;
   public ParsableList<ExoCalendar> calendar_ds;
   public ParsableList<Event> event_ds;
   public ParsableList<Task> task_ds;
@@ -129,31 +129,25 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
 
   public void init() {
     Intent intent = getIntent();
-    Calendar cal = Calendar.getInstance();
-    cal.set(Calendar.HOUR_OF_DAY, 0);
-    cal.clear(Calendar.MINUTE);
-    cal.clear(Calendar.SECOND);
-    cal.clear(Calendar.MILLISECOND);
+    Long timeInMillis = Calendar.getInstance().getTimeInMillis();
     if (intent.hasExtra("date")) {
-      date = new Date(intent.getLongExtra("date", cal.getTimeInMillis()));
-    } else {
-      date = cal.getTime();
+      timeInMillis = intent.getLongExtra("date", timeInMillis);
     }
+    setDate(timeInMillis);
 
-    calendar_ds = new ParsableList<ExoCalendar>();
-    event_ds = new ParsableList<Event>();
-    task_ds = new ParsableList<Task>();
-    occurrences = new ArrayList<ComparableOccurrence>();
+    calendar_ds = new ParsableList<>();
+    event_ds = new ParsableList<>();
+    task_ds = new ParsableList<>();
+    occurrences = new ArrayList<>();
   }
 
   public void reset() {
-    calendar_ds = new ParsableList<ExoCalendar>();
-    event_ds = new ParsableList<Event>();
-    task_ds = new ParsableList<Task>();
-    occurrences = new ArrayList<ComparableOccurrence>();
+    calendar_ds = new ParsableList<>();
+    event_ds = new ParsableList<>();
+    task_ds = new ParsableList<>();
+    occurrences = new ArrayList<>();
     adapter = new DayViewAdapter(this, connector, date, occurrences);
     recyclerView.setAdapter(adapter);
-    removeFragment();
   }
 
   public void download() {
@@ -175,12 +169,15 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
                 if ((eventParsableList.data != null) && (eventParsableList.data.length != 0)) {
                   for (int i=0; i < eventParsableList.data.length; i++) {
                     occurrences.add(eventParsableList.data[i]);
-                    Collections.sort(occurrences);
                   }
                 }
+                Collections.sort(occurrences);
                 adapter.notifyDataSetChanged();
                 if (event_ds.data.length < eventParsableList.getSize()) {
                   connector.getService().getEventsByCalendarId(true, event_ds.data.length, start, end, calendar.getId(), this);
+                } else {
+                  Collections.sort(occurrences);
+                  adapter.notifyDataSetChanged();
                 }
               }
 
@@ -199,9 +196,13 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
                     occurrences.add(taskParsableList.data[i]);
                   }
                 }
+                Collections.sort(occurrences);
                 adapter.notifyDataSetChanged();
                 if (task_ds.data.length < taskParsableList.getSize()) {
                   connector.getService().getTasksByCalendarId(true, task_ds.data.length, start, end, calendar.getId(), this);
+                } else {
+                  Collections.sort(occurrences);
+                  adapter.notifyDataSetChanged();
                 }
               }
 
@@ -235,23 +236,21 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
   public void onClickNext() {
     date = new Date(date.getTime() + 1000*60*60*24);
     caption.setText((new SimpleDateFormat("MMM dd ''yy")).format(date));
+    removeFragment();
     reset();
     download();
   }
   public void onClickPrev() {
     date = new Date(date.getTime() - 1000*60*60*24);
     caption.setText((new SimpleDateFormat("MMM dd ''yy")).format(date));
+    removeFragment();
     reset();
     download();
   }
   public void today() {
-    Calendar cal = Calendar.getInstance();
-    cal.set(Calendar.HOUR_OF_DAY, 0);
-    cal.clear(Calendar.MINUTE);
-    cal.clear(Calendar.SECOND);
-    cal.clear(Calendar.MILLISECOND);
-    date = cal.getTime();
+    setDate(Calendar.getInstance().getTimeInMillis());
     caption.setText((new SimpleDateFormat("MMM dd ''yy")).format(date));
+    removeFragment();
     reset();
     download();
   }
@@ -319,17 +318,38 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
     } else {
       Intent intent = new Intent(DayViewActivity.this, NewTaskActivity.class);
       intent.putExtra(NewTaskActivity.RECEIVED_INTENT_KEY_DATE, date.getTime());
-      ArrayList<String> calendarJsonList = new ArrayList<String>();
+      ArrayList<String> calendarJsonList = new ArrayList<>();
       for (ExoCalendar exoCalendar : calendar_ds.data) {
         calendarJsonList.add(connector.gson.toJson(exoCalendar));
       }
-      intent.putStringArrayListExtra(NewEventActivity.RECEIVED_INTENT_KEY_CALENDAR_JSON_LIST, calendarJsonList);
+      intent.putStringArrayListExtra(NewTaskActivity.RECEIVED_INTENT_KEY_CALENDAR_JSON_LIST, calendarJsonList);
       startActivityForResult(intent, CREATE_TASK);
     }
   }
 
   public void createCalendar() {
     //TODO
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (resultCode == RESULT_OK) {
+      Long returned_date = 0L;
+      if (requestCode == CREATE_EVENT) {
+        returned_date = data.getLongExtra(NewEventActivity.RETURNED_INTENT_KEY_DATE, 0L);
+      }
+      if (requestCode == CREATE_TASK) {
+        returned_date = data.getLongExtra(NewTaskActivity.RETURNED_INTENT_KEY_DATE, 0L);
+      }
+      if (returned_date != 0L) {
+        //refresh the view with the returned date -- no matter it is the same as or different from the current date
+        setDate(returned_date);
+        caption.setText((new SimpleDateFormat("MMM dd ''yy")).format(date));
+        removeFragment();
+        reset();
+        download();
+      }
+    }
   }
 
   //Implements CommunicationInterface
@@ -355,7 +375,7 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
     return new ArrayList<>(Arrays.asList(calendar_ds.data));
   }
 
-  //Item click
+  //Item click (show item in fragment)
   public void onItemClick(int position) {
     FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
     OccurrenceViewFragment fragment = new OccurrenceViewFragment();
@@ -371,5 +391,19 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
     if (fragment != null) {
       getFragmentManager().beginTransaction().remove(fragment).commit();
     }
+  }
+
+  // use this method to set date to assure its time is always 00:00:00.000
+  public void setDate(Long timeInMillis) {
+    Calendar cal = Calendar.getInstance();
+    cal.setTimeInMillis(timeInMillis);
+    cal.set(Calendar.HOUR_OF_DAY, 0);
+    cal.clear(Calendar.MINUTE);
+    cal.clear(Calendar.SECOND);
+    cal.clear(Calendar.MILLISECOND);
+    this.date = cal.getTime();
+  }
+  public Date getDate() {
+    return date;
   }
 }
