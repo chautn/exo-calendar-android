@@ -42,10 +42,8 @@ import retrofit.client.Response;
  */
 public class DayViewActivity extends AppCompatActivity implements OccurrenceViewFragment.CommunicationInterface {
 
-  public static final int CREATE_CALENDAR = 1;
-  public static final int CREATE_CATEGORY = 2;
-  public static final int CREATE_EVENT = 3;
-  public static final int CREATE_TASK = 4;
+  public static final int CREATE_EVENT = 1;
+  public static final int CREATE_TASK = 2;
 
   public Date date;
   public ParsableList<ExoCalendar> calendar_ds;
@@ -78,7 +76,6 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
     recyclerView.setLayoutManager(layoutManager);
 
     init();
-    System.out.println(date);
     caption.setText((new SimpleDateFormat("MMM dd ''yy")).format(date));
     connector = ((ExoCalendarApp) getApplicationContext()).getConnector();
     adapter = new DayViewAdapter(this, connector, date, occurrences);
@@ -274,7 +271,7 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
           createCalendar();
         }
       });
-      builder.setNeutralButton("Take me to calendar view", new DialogInterface.OnClickListener() {
+      builder.setNeutralButton("Go to calendar view", new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
           Intent intent = new Intent(DayViewActivity.this, ManageCalendarActivity.class);
@@ -285,7 +282,7 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
     } else {
       Intent intent = new Intent(DayViewActivity.this, NewEventActivity.class);
       intent.putExtra(NewEventActivity.RECEIVED_INTENT_KEY_DATE, date.getTime());
-      ArrayList<String> calendarJsonList = new ArrayList<String>();
+      ArrayList<String> calendarJsonList = new ArrayList<>();
       for (ExoCalendar exoCalendar : calendar_ds.data) {
         calendarJsonList.add(connector.gson.toJson(exoCalendar));
       }
@@ -295,11 +292,43 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
   }
 
   public void createTask() {
-    //
+    if ((calendar_ds.data == null) || (calendar_ds.data.length == 0)) {
+      AlertDialog.Builder builder = new AlertDialog.Builder(this);
+      builder.setMessage("You've no calendar. Create one now?");
+      builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+
+        }
+      });
+      builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+          createCalendar();
+        }
+      });
+      builder.setNeutralButton("Take me to calendar view", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+          Intent intent = new Intent(DayViewActivity.this, ManageCalendarActivity.class);
+          startActivity(intent);
+        }
+      });
+      builder.show();
+    } else {
+      Intent intent = new Intent(DayViewActivity.this, NewTaskActivity.class);
+      intent.putExtra(NewTaskActivity.RECEIVED_INTENT_KEY_DATE, date.getTime());
+      ArrayList<String> calendarJsonList = new ArrayList<String>();
+      for (ExoCalendar exoCalendar : calendar_ds.data) {
+        calendarJsonList.add(connector.gson.toJson(exoCalendar));
+      }
+      intent.putStringArrayListExtra(NewEventActivity.RECEIVED_INTENT_KEY_CALENDAR_JSON_LIST, calendarJsonList);
+      startActivityForResult(intent, CREATE_TASK);
+    }
   }
 
   public void createCalendar() {
-
+    //TODO
   }
 
   //Implements CommunicationInterface
@@ -322,7 +351,7 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
     adapter.notifyItemChanged(position);
   }
   public ArrayList<ExoCalendar> getCalendarList() {
-    return new ArrayList<ExoCalendar>(Arrays.asList(calendar_ds.data));
+    return new ArrayList<>(Arrays.asList(calendar_ds.data));
   }
 
   //Item click

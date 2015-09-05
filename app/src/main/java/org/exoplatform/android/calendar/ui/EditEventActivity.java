@@ -66,21 +66,23 @@ public class EditEventActivity extends AppCompatActivity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.event);
+
     isValidatedOnView = false;
     connector = ((ExoCalendarApp) getApplicationContext()).getConnector();
-    /**
-     * This implementation uses offline Calendar list which must be passed from calling activities (e.g DayViewActivity).
-     */
+
+    // This implementation uses offline Calendar list which must be passed from calling activities (e.g DayViewActivity).
+
     calendarJsonList = getIntent().getStringArrayListExtra(EditEventActivity.RECEIVED_INTENT_KEY_CALENDAR_JSON_LIST);
-    calendarNameList = new ArrayList<String>();
-    calendarIdList = new ArrayList<String>();
+    calendarNameList = new ArrayList<>();
+    calendarIdList = new ArrayList<>();
     for (String calendarJson : calendarJsonList) {
       calendarIdList.add(connector.gson.fromJson(calendarJson, ExoCalendar.class).getId());
       calendarNameList.add(connector.gson.fromJson(calendarJson, ExoCalendar.class).getName());
     }
+
     setView();
     createItemFromJson();
-    updateViewFromItem(event);
+    updateViewFromItem();
   }
 
   public void createItemFromJson() {
@@ -113,8 +115,6 @@ public class EditEventActivity extends AppCompatActivity {
               }
             },
             cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-        fromDatePickerDialog.getDatePicker().setCalendarViewShown(false); // doesn't work???
-        fromDatePickerDialog.getDatePicker().setSpinnersShown(true); // doesn't work???
         fromDatePickerDialog.show();
       }
     });
@@ -132,8 +132,6 @@ public class EditEventActivity extends AppCompatActivity {
               }
             },
             cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-        toDatePickerDialog.getDatePicker().setCalendarViewShown(false); // doesn't work???
-        toDatePickerDialog.getDatePicker().setSpinnersShown(true); // doesn't work???
         toDatePickerDialog.show();
       }
     });
@@ -141,12 +139,9 @@ public class EditEventActivity extends AppCompatActivity {
     ArrayAdapter<CharSequence> time_spinner_adapter = ArrayAdapter.createFromResource(this,
         R.array.time, android.R.layout.simple_spinner_item);
     spinnerFromTime.setAdapter(time_spinner_adapter);
-    spinnerToTime.setAdapter(time_spinner_adapter); //is it safe to use the same adapter?
+    spinnerToTime.setAdapter(time_spinner_adapter);
 
-    /**
-     * Binds calendar list to UI.
-     * This implementation uses offline Calendar list which must be passed from calling activities (e.g DayViewActivity).
-     */
+    // Binds calendar list to UI.
     ArrayAdapter<String> calendar_spinner_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, calendarNameList);
     spinnerCalendarName.setAdapter(calendar_spinner_adapter);
 
@@ -164,7 +159,7 @@ public class EditEventActivity extends AppCompatActivity {
     });
   }
 
-  public void updateViewFromItem(Event event) {
+  public void updateViewFromItem() {
     editTextTitle.setText(event.getSubject());
     editTextDescription.setText(event.getDescription());
     editTextFromDate.setText((new SimpleDateFormat("MM/dd/yyyy")).format(event.getStartDate()));

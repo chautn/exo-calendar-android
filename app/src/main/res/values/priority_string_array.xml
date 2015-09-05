@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string-array name="priority_name">
+    <item>None</item>
+    <item>Normal</item>
+    <item>High</item>
+    <item>Low</item>
+  </string-array>
+  <string-array name="priority_value">
+    <item>none</item>
+    <item>normal</item>
+    <item>high</item>
+    <item>low</item>
+  </string-array>
+</resources>

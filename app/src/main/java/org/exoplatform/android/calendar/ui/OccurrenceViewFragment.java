@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -107,9 +106,11 @@ public class OccurrenceViewFragment extends Fragment {
         }
         if (occurrence instanceof Task) {
           Intent intent = new Intent(getActivity(), EditTaskActivity.class);
-          intent.putExtra("itemJson", occurrenceJson);
-          intent.putExtra("position", position);
-          intent.putExtra("id", id);
+          intent.putStringArrayListExtra(EditTaskActivity.RECEIVED_INTENT_KEY_CALENDAR_JSON_LIST, calendarJsonList);
+          intent.putExtra(EditTaskActivity.RECEIVED_INTENT_KEY_TASK_JSON, occurrenceJson);
+          intent.putExtra(EditTaskActivity.RECEIVED_INTENT_KEY_POSITION, position);
+          intent.putExtra(EditTaskActivity.RECEIVED_INTENT_KEY_TASK_ID, id);
+          intent.putExtra(EditTaskActivity.RECEIVED_INTENT_KEY_DATE, occurrence.getStartDate().getTime());
           startActivityForResult(intent, EDIT_TASK);
         } else {
           Intent intent = new Intent(getActivity(), EditEventActivity.class);

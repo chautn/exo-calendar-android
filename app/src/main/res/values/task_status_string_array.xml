@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string-array name="task_status_name">
+    <item>Needs Action</item>
+    <item>In Progress</item>
+    <item>Completed</item>
+    <item>Canceled</item>
+  </string-array>
+  <string-array name="task_status_value">
+    <item>needs-action</item>
+    <item>in-process</item>
+    <item>completed</item>
+    <item>canceled</item>
+  </string-array>
+</resources>

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -20,10 +19,8 @@ import org.exoplatform.android.calendar.R;
 import org.exoplatform.calendar.client.model.ComparableOccurrence;
 import org.exoplatform.calendar.client.model.Event;
 import org.exoplatform.calendar.client.model.ExoCalendar;
-import org.exoplatform.calendar.client.model.ParsableList;
 import org.exoplatform.calendar.client.rest.ExoCalendarConnector;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -68,20 +65,24 @@ public class NewEventActivity extends AppCompatActivity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.event);
-    isValidatedOnView = false;
+
     connector = ((ExoCalendarApp) getApplicationContext()).getConnector();
+    event = new Event();
+    date = new Date(getIntent().getLongExtra(RECEIVED_INTENT_KEY_DATE, new Date().getTime()));
+    isValidatedOnView = false;
+
     /**
      * This implementation uses offline Calendar list which must be passed from calling activities (e.g DayViewActivity).
      */
     calendarJsonList = getIntent().getStringArrayListExtra(NewEventActivity.RECEIVED_INTENT_KEY_CALENDAR_JSON_LIST);
-    calendarNameList = new ArrayList<String>();
-    calendarIdList = new ArrayList<String>();
+    calendarNameList = new ArrayList<>();
+    calendarIdList = new ArrayList<>();
     for (String calendarJson : calendarJsonList) {
       calendarIdList.add(connector.gson.fromJson(calendarJson, ExoCalendar.class).getId());
       calendarNameList.add(connector.gson.fromJson(calendarJson, ExoCalendar.class).getName());
     }
+
     setView();
-    createItemFromDefaultValues();
   }
 
   public void setView() {
@@ -160,20 +161,14 @@ public class NewEventActivity extends AppCompatActivity {
     });
   }
 
-  public void createItemFromDefaultValues() {
-    event = new Event();
-    //
-  }
-
-  public void updateItemFromView(Event event) {
+  public void updateItemFromView() {
     event.setSubject(editTextTitle.getText().toString());
     event.setDescription(editTextDescription.getText().toString());
     String toDateTime = editTextToDate.getText().toString() + "T" + spinnerToTime.getSelectedItem().toString();
     String fromDateTime = editTextFromDate.getText().toString() + "T" + spinnerFromTime.getSelectedItem().toString();
-    Date from_, to_;
     try {
-      from_ = (new SimpleDateFormat("MM/dd/yyyy'T'HH:mm")).parse(fromDateTime);
-      to_ = (new SimpleDateFormat("MM/dd/yyyy'T'HH:mm")).parse(toDateTime);
+      Date from_ = (new SimpleDateFormat("MM/dd/yyyy'T'HH:mm")).parse(fromDateTime);
+      Date to_ = (new SimpleDateFormat("MM/dd/yyyy'T'HH:mm")).parse(toDateTime);
       event.setFrom((new SimpleDateFormat(ComparableOccurrence.iso8601dateformat)).format(from_));
       event.setTo((new SimpleDateFormat(ComparableOccurrence.iso8601dateformat)).format(to_));
     } catch (Exception e) {}
@@ -282,7 +277,7 @@ public class NewEventActivity extends AppCompatActivity {
   public void onSave() {
     validateOnView();
     if (isValidatedOnView) {
-      updateItemFromView(event);
+      updateItemFromView();
       String calendar_id = calendarIdList.get(spinnerCalendarName.getSelectedItemPosition());
       final String itemJson = connector.gson.toJson(event);
       Callback<Response> callback = new Callback<Response>() {
@@ -290,7 +285,7 @@ public class NewEventActivity extends AppCompatActivity {
         public void success(Response response, Response response2) {
           Intent intent = new Intent();
           intent.putExtra(NewEventActivity.RETURNED_INTENT_KEY_EVENT_JSON, itemJson);
-          intent.putExtra("date", event.getStartDate().getTime());
+          intent.putExtra(NewEventActivity.RETURNED_INTENT_KEY_DATE, event.getStartDate().getTime());
           setResult(RESULT_OK, intent);
           finish();
         }
@@ -304,6 +299,7 @@ public class NewEventActivity extends AppCompatActivity {
     }
 
   }
+
   public void onCancel() {
     setResult(RESULT_CANCELED);
     finish();

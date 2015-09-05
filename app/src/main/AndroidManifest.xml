@@ -38,6 +38,10 @@
       android:label="Weekies" >
     </activity>
     <activity
+      android:name="org.exoplatform.android.calendar.ui.NewTaskActivity"
+      android:label="Weekies" >
+    </activity>
+    <activity
       android:name="org.exoplatform.android.calendar.MainActivity"
       android:label="@string/app_name" >
     </activity>
