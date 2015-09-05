@@ -1,6 +1,5 @@
 package org.exoplatform.android.calendar.ui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
@@ -9,7 +8,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -19,8 +17,8 @@ import android.widget.Toast;
 import org.exoplatform.android.calendar.ExoCalendarApp;
 import org.exoplatform.android.calendar.R;
 import org.exoplatform.calendar.client.model.ComparableOccurrence;
-import org.exoplatform.calendar.client.model.Event;
 import org.exoplatform.calendar.client.model.ExoCalendar;
+import org.exoplatform.calendar.client.model.Task;
 import org.exoplatform.calendar.client.rest.ExoCalendarConnector;
 
 import java.text.SimpleDateFormat;
@@ -33,29 +31,25 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- * Created by chautn on 8/31/15.
+ * Created by chautn on 9/4/15.
  */
-public class EditEventActivity extends AppCompatActivity {
+public class NewTaskActivity extends AppCompatActivity {
 
   public static final String RECEIVED_INTENT_KEY_CALENDAR_JSON_LIST = "calendarJsonList";
-  public static final String RECEIVED_INTENT_KEY_EVENT_JSON = "itemJson";
-  public static final String RECEIVED_INTENT_KEY_EVENT_ID = "itemId";
-  public static final String RECEIVED_INTENT_KEY_POSITION = "itemPosition";
   public static final String RECEIVED_INTENT_KEY_DATE = "date";
-  public static final String RETURN_INTENT_KEY_EVENT_JSON = "itemJson";
-  public static final String RETURN_INTENT_KEY_EVENT_ID = "itemId";
-  public static final String RETURN_INTENT_KEY_POSITION = "itemPosition";
-  public static final String RETURN_INTENT_KEY_OLD_DATE = "oldDate";
-  public static final String RETURN_INTENT_KEY_NEW_DATE = "newDate";
+  public static final String RETURNED_INTENT_KEY_DATE = "date";
+  public static final String RETURNED_INTENT_KEY_TASK_JSON = "itemJson";
+  public static final String RETURNED_INTENT_KEY_TASK_ID = "itemId";
 
-  public EditText editTextTitle, editTextDescription, editTextLocation;
+  public EditText editTextTitle, editTextDescription;
   public TextView cancel, save;
   public EditText editTextFromDate, editTextToDate;
   public Spinner spinnerFromTime, spinnerToTime;
   public Spinner spinnerPriority;
   public Spinner spinnerCalendarName;
+  public Spinner spinnerStatus;
 
-  public Event event;
+  public Task task;
   public Date date;
   public boolean isValidatedOnView;
 
@@ -63,18 +57,19 @@ public class EditEventActivity extends AppCompatActivity {
   public ArrayList<String> calendarJsonList, calendarIdList, calendarNameList;
 
   public DatePickerDialog fromDatePickerDialog, toDatePickerDialog;
-  public String[] priority_value;
+  public String[] priority_value, status_value;
 
+  @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.event);
+    setContentView(R.layout.task);
 
-    isValidatedOnView = false;
     connector = ((ExoCalendarApp) getApplicationContext()).getConnector();
+    task = new Task();
+    date = new Date(getIntent().getLongExtra(RECEIVED_INTENT_KEY_DATE, new Date().getTime()));
+    isValidatedOnView = false;
 
-    // This implementation uses offline Calendar list which must be passed from calling activities (e.g DayViewActivity).
-
-    calendarJsonList = getIntent().getStringArrayListExtra(EditEventActivity.RECEIVED_INTENT_KEY_CALENDAR_JSON_LIST);
+    calendarJsonList = getIntent().getStringArrayListExtra(NewTaskActivity.RECEIVED_INTENT_KEY_CALENDAR_JSON_LIST);
     calendarNameList = new ArrayList<>();
     calendarIdList = new ArrayList<>();
     for (String calendarJson : calendarJsonList) {
@@ -83,35 +78,29 @@ public class EditEventActivity extends AppCompatActivity {
     }
 
     priority_value = getResources().getStringArray(R.array.priority_value);
+    status_value = getResources().getStringArray(R.array.task_status_value);
 
     setView();
-    createItemFromJson();
-    updateViewFromItem();
-  }
-
-  public void createItemFromJson() {
-    String itemJson = getIntent().getStringExtra(EditEventActivity.RECEIVED_INTENT_KEY_EVENT_JSON);
-    event = connector.gson.fromJson(itemJson, Event.class);
   }
 
   public void setView() {
-    editTextTitle = (EditText) findViewById(R.id.event_subject);
-    editTextDescription = (EditText) findViewById(R.id.event_description);
-    editTextLocation = (EditText) findViewById(R.id.event_location);
-    cancel = (TextView) findViewById(R.id.event_cancel);
-    save = (TextView) findViewById(R.id.event_save);
-    editTextFromDate = (EditText) findViewById(R.id.event_from_date);
-    editTextToDate = (EditText) findViewById(R.id.event_to_date);
-    spinnerFromTime = (Spinner) findViewById(R.id.event_from_time);
-    spinnerToTime = (Spinner) findViewById(R.id.event_to_time);
-    spinnerPriority = (Spinner) findViewById(R.id.event_priority);
-    spinnerCalendarName = (Spinner) findViewById(R.id.event_calendar_name);
+    editTextTitle = (EditText) findViewById(R.id.task_subject);
+    editTextDescription = (EditText) findViewById(R.id.task_description);
+    cancel = (TextView) findViewById(R.id.task_cancel);
+    save = (TextView) findViewById(R.id.task_save);
+    editTextFromDate = (EditText) findViewById(R.id.task_from_date);
+    editTextToDate = (EditText) findViewById(R.id.task_to_date);
+    spinnerFromTime = (Spinner) findViewById(R.id.task_from_time);
+    spinnerToTime = (Spinner) findViewById(R.id.task_to_time);
+    spinnerCalendarName = (Spinner) findViewById(R.id.task_calendar_name);
+    spinnerPriority = (Spinner) findViewById(R.id.task_priority);
+    spinnerStatus = (Spinner) findViewById(R.id.task_status);
 
     editTextFromDate.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         Calendar cal = Calendar.getInstance();
-        fromDatePickerDialog = new DatePickerDialog(EditEventActivity.this,
+        fromDatePickerDialog = new DatePickerDialog(NewTaskActivity.this,
             new DatePickerDialog.OnDateSetListener() {
               @Override
               public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -128,7 +117,7 @@ public class EditEventActivity extends AppCompatActivity {
       @Override
       public void onClick(View v) {
         Calendar cal = Calendar.getInstance();
-        toDatePickerDialog = new DatePickerDialog(EditEventActivity.this,
+        toDatePickerDialog = new DatePickerDialog(NewTaskActivity.this,
             new DatePickerDialog.OnDateSetListener() {
               @Override
               public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -151,6 +140,10 @@ public class EditEventActivity extends AppCompatActivity {
         R.array.priority_name, android.R.layout.simple_spinner_item);
     spinnerPriority.setAdapter(priority_spinner_adapter);
 
+    ArrayAdapter<CharSequence> status_spinner_adapter = ArrayAdapter.createFromResource(this,
+        R.array.task_status_name, android.R.layout.simple_spinner_item);
+    spinnerStatus.setAdapter(status_spinner_adapter);
+
     // Binds calendar list to UI.
     ArrayAdapter<String> calendar_spinner_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, calendarNameList);
     spinnerCalendarName.setAdapter(calendar_spinner_adapter);
@@ -169,45 +162,20 @@ public class EditEventActivity extends AppCompatActivity {
     });
   }
 
-  public void updateViewFromItem() {
-    editTextTitle.setText(event.getSubject());
-    editTextDescription.setText(event.getDescription());
-    editTextLocation.setText(event.getLocation());
-    editTextFromDate.setText((new SimpleDateFormat("MM/dd/yyyy")).format(event.getStartDate()));
-    editTextToDate.setText((new SimpleDateFormat("MM/dd/yyyy")).format(event.getEndDate()));
-
-    //TODO : need to prevent invalid data (like 00:11) from causing problem
-    String from_ = (new SimpleDateFormat("HH:mm")).format(event.getStartDate());
-    String to_ = (new SimpleDateFormat("HH:mm")).format(event.getEndDate());
-    spinnerFromTime.setSelection(((ArrayAdapter<CharSequence>) spinnerFromTime.getAdapter()).getPosition(from_));
-    spinnerToTime.setSelection(((ArrayAdapter<CharSequence>) spinnerFromTime.getAdapter()).getPosition(to_));
-
-    String calendar_id = event.getCalendarId();
-    spinnerCalendarName.setSelection(((ArrayAdapter<CharSequence>) spinnerCalendarName.getAdapter()).getPosition(calendar_id));
-
-    int priority_length = priority_value.length;
-    for (int i=0; i < priority_length; i++) {
-      if (event.getPriority().equals(priority_value[i])) {
-        spinnerPriority.setSelection(i);
-        break;
-      }
-    }
-  }
-
-  public void updateItemFromView(Event event) {
-    event.setSubject(editTextTitle.getText().toString());
-    event.setDescription(editTextDescription.getText().toString());
-    event.setLocation(editTextLocation.getText().toString());
+  public void updateItemFromView() {
+    task.setName(editTextTitle.getText().toString());
+    task.setNote(editTextDescription.getText().toString());
     String toDateTime = editTextToDate.getText().toString() + "T" + spinnerToTime.getSelectedItem().toString();
     String fromDateTime = editTextFromDate.getText().toString() + "T" + spinnerFromTime.getSelectedItem().toString();
     try {
       Date from_ = (new SimpleDateFormat("MM/dd/yyyy'T'HH:mm")).parse(fromDateTime);
       Date to_ = (new SimpleDateFormat("MM/dd/yyyy'T'HH:mm")).parse(toDateTime);
-      event.setFrom((new SimpleDateFormat(ComparableOccurrence.iso8601dateformat)).format(from_));
-      event.setTo((new SimpleDateFormat(ComparableOccurrence.iso8601dateformat)).format(to_));
+      task.setFrom((new SimpleDateFormat(ComparableOccurrence.iso8601dateformat)).format(from_));
+      task.setTo((new SimpleDateFormat(ComparableOccurrence.iso8601dateformat)).format(to_));
     } catch (Exception e) {}
 
-    event.setPriority(priority_value[spinnerPriority.getSelectedItemPosition()]);
+    task.setPriority(priority_value[spinnerPriority.getSelectedItemPosition()]);
+    task.setStatus(status_value[spinnerStatus.getSelectedItemPosition()]);
   }
 
   public void validateOnView() {
@@ -310,43 +278,42 @@ public class EditEventActivity extends AppCompatActivity {
     isValidatedOnView = true;
   }
 
-  public void onCancel() {
-    setResult(RESULT_CANCELED);
-    finish();
-  }
   public void onSave() {
     validateOnView();
-    updateItemFromView(event);
     if (isValidatedOnView) {
-      final String event_id = getIntent().getStringExtra(EditEventActivity.RECEIVED_INTENT_KEY_EVENT_ID);
-      final Long oldDate = getIntent().getLongExtra(EditEventActivity.RECEIVED_INTENT_KEY_DATE, -1);
-      final int itemPosition = getIntent().getIntExtra(EditEventActivity.RECEIVED_INTENT_KEY_POSITION, -1);
+      updateItemFromView();
+      String calendar_id = calendarIdList.get(spinnerCalendarName.getSelectedItemPosition());
+      final String itemJson = connector.gson.toJson(task);
       Callback<Response> callback = new Callback<Response>() {
         @Override
         public void success(Response response, Response response2) {
           Intent intent = new Intent();
-          intent.putExtra(EditEventActivity.RETURN_INTENT_KEY_EVENT_JSON, connector.gson.toJson(event));
-          intent.putExtra(EditEventActivity.RETURN_INTENT_KEY_EVENT_ID, event_id);
-          intent.putExtra(EditEventActivity.RETURN_INTENT_KEY_POSITION, itemPosition);
-          intent.putExtra(EditEventActivity.RETURN_INTENT_KEY_OLD_DATE, oldDate);
-          intent.putExtra(EditEventActivity.RETURN_INTENT_KEY_NEW_DATE, event.getStartDate().getTime());
-
+          intent.putExtra(NewTaskActivity.RETURNED_INTENT_KEY_TASK_JSON, itemJson);
+          intent.putExtra(NewTaskActivity.RETURNED_INTENT_KEY_DATE, task.getStartDate().getTime());
           setResult(RESULT_OK, intent);
           finish();
         }
 
         @Override
         public void failure(RetrofitError error) {
-          Toast.makeText(EditEventActivity.this, "Save can't be done in the moment, please try again later!", Toast.LENGTH_SHORT).show();
+          Toast.makeText(NewTaskActivity.this, "Save can't be done in the moment, please try again later!", Toast.LENGTH_SHORT).show();
         }
       };
-      connector.getService().updateEventById(event, event_id, callback);
+      connector.getService().createTask(task, calendar_id, callback);
     }
+
+  }
+
+  public void onCancel() {
+    setResult(RESULT_CANCELED);
+    finish();
   }
 
   public void test(View view) {
-    System.out.println(event.getEndDate());
-    System.out.println(event.getEnd24());
-    System.out.println(event.getEndAMPM());
+    int position = spinnerPriority.getSelectedItemPosition();
+    System.out.println(spinnerPriority.getSelectedItemPosition());
+    System.out.println((spinnerPriority.getAdapter()).getItem(spinnerPriority.getSelectedItemPosition()).toString());
+    System.out.println((spinnerPriority.getAdapter()).getItemId(spinnerPriority.getSelectedItemPosition()));
+    System.out.println(getResources().getStringArray(R.array.priority_value)[position]);
   }
 }

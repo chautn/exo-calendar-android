@@ -47,10 +47,11 @@ public class NewEventActivity extends AppCompatActivity {
   public static final String RETURNED_INTENT_KEY_EVENT_JSON = "itemJson";
   public static final String RETURNED_INTENT_KEY_EVENT_ID = "itemId";
 
-  public EditText editTextTitle, editTextDescription;
+  public EditText editTextTitle, editTextDescription, editTextLocation;
   public TextView cancel, save;
   public EditText editTextFromDate, editTextToDate;
   public Spinner spinnerFromTime, spinnerToTime;
+  public Spinner spinnerPriority;
   public Spinner spinnerCalendarName;
 
   public Event event;
@@ -61,6 +62,7 @@ public class NewEventActivity extends AppCompatActivity {
   public ArrayList<String> calendarJsonList, calendarIdList, calendarNameList;
 
   public DatePickerDialog fromDatePickerDialog, toDatePickerDialog;
+  public String[] priority_value;
 
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -82,18 +84,22 @@ public class NewEventActivity extends AppCompatActivity {
       calendarNameList.add(connector.gson.fromJson(calendarJson, ExoCalendar.class).getName());
     }
 
+    priority_value = getResources().getStringArray(R.array.priority_value);
+
     setView();
   }
 
   public void setView() {
     editTextTitle = (EditText) findViewById(R.id.event_subject);
     editTextDescription = (EditText) findViewById(R.id.event_description);
+    editTextLocation = (EditText) findViewById(R.id.event_location);
     cancel = (TextView) findViewById(R.id.event_cancel);
     save = (TextView) findViewById(R.id.event_save);
     editTextFromDate = (EditText) findViewById(R.id.event_from_date);
     editTextToDate = (EditText) findViewById(R.id.event_to_date);
     spinnerFromTime = (Spinner) findViewById(R.id.event_from_time);
     spinnerToTime = (Spinner) findViewById(R.id.event_to_time);
+    spinnerPriority = (Spinner) findViewById(R.id.event_priority);
     spinnerCalendarName = (Spinner) findViewById(R.id.event_calendar_name);
 
     editTextFromDate.setOnClickListener(new View.OnClickListener() {
@@ -110,8 +116,6 @@ public class NewEventActivity extends AppCompatActivity {
               }
             },
             cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-        fromDatePickerDialog.getDatePicker().setCalendarViewShown(false); // doesn't work???
-        fromDatePickerDialog.getDatePicker().setSpinnersShown(true); // doesn't work???
         fromDatePickerDialog.show();
       }
     });
@@ -129,8 +133,6 @@ public class NewEventActivity extends AppCompatActivity {
               }
             },
             cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-        toDatePickerDialog.getDatePicker().setCalendarViewShown(false); // doesn't work???
-        toDatePickerDialog.getDatePicker().setSpinnersShown(true); // doesn't work???
         toDatePickerDialog.show();
       }
     });
@@ -138,13 +140,14 @@ public class NewEventActivity extends AppCompatActivity {
     ArrayAdapter<CharSequence> time_spinner_adapter = ArrayAdapter.createFromResource(this,
         R.array.time, android.R.layout.simple_spinner_item);
     spinnerFromTime.setAdapter(time_spinner_adapter);
-    spinnerToTime.setAdapter(time_spinner_adapter); //is it safe to use the same adapter?
+    spinnerToTime.setAdapter(time_spinner_adapter);
 
-    /**
-     * Binds calendar list to UI.
-     * This implementation uses offline Calendar list which must be passed from calling activities (e.g DayViewActivity).
-     */
-    ArrayAdapter<String> calendar_spinner_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, calendarNameList);
+    ArrayAdapter<CharSequence> priority_spinner_adapter = ArrayAdapter.createFromResource(this,
+        R.array.priority_name, android.R.layout.simple_spinner_item);
+    spinnerPriority.setAdapter(priority_spinner_adapter);
+
+    // Binds calendar list to UI.
+    ArrayAdapter<String> calendar_spinner_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, calendarNameList);
     spinnerCalendarName.setAdapter(calendar_spinner_adapter);
 
     cancel.setOnClickListener(new View.OnClickListener() {
@@ -164,6 +167,8 @@ public class NewEventActivity extends AppCompatActivity {
   public void updateItemFromView() {
     event.setSubject(editTextTitle.getText().toString());
     event.setDescription(editTextDescription.getText().toString());
+    event.setLocation(editTextLocation.getText().toString());
+    event.setPriority(priority_value[spinnerPriority.getSelectedItemPosition()]);
     String toDateTime = editTextToDate.getText().toString() + "T" + spinnerToTime.getSelectedItem().toString();
     String fromDateTime = editTextFromDate.getText().toString() + "T" + spinnerFromTime.getSelectedItem().toString();
     try {

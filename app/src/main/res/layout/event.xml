@@ -17,6 +17,7 @@
         android:padding="5dip" />
       <EditText
         android:id="@+id/event_subject"
+        android:layout_span="2"
         android:singleLine="true"/>
     </TableRow>
     <TableRow>
@@ -25,8 +26,18 @@
         android:padding="5dip"/>
       <EditText
         android:id="@+id/event_description"
+        android:layout_span="2"
         android:maxLines="5"
         android:lines="3"/>
+    </TableRow>
+    <TableRow>
+      <TextView
+        android:text="Location:"
+        android:padding="5dip" />
+      <EditText
+        android:id="@+id/event_location"
+        android:layout_span="2"
+        android:singleLine="true"/>
     </TableRow>
     <TableRow>
       <TextView
@@ -50,6 +61,13 @@
     </TableRow>
     <TableRow>
       <TextView
+        android:text="Priority:"
+        android:padding="5dip"/>
+      <Spinner
+        android:id="@+id/event_priority"/>
+    </TableRow>
+    <TableRow>
+      <TextView
         android:text="Calendar:"
         android:padding="5dip"/>
       <Spinner
@@ -60,7 +78,8 @@
     android:text="test"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:onClick="test"/>
+    android:onClick="test"
+    android:visibility="gone"/>
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="30dp"
