@@ -13,6 +13,7 @@ import org.exoplatform.android.calendar.R;
 import org.exoplatform.calendar.client.model.ComparableOccurrence;
 import org.exoplatform.calendar.client.rest.ExoCalendarConnector;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -46,8 +47,12 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.ViewHold
   }
 
   public void onBindViewHolder(ViewHolder holder, final int position) {
-    holder.startView.setText(occurrences.get(position).getStart24());
-    holder.endView.setText(occurrences.get(position).getEnd24());
+    ComparableOccurrence item = occurrences.get(position);
+    holder.startView.setText(item.getStart24());
+    //duration
+    double duration = item.getEndDate().getTime() - item.getStartDate().getTime();
+    double hours = duration / (1000*60*60);
+    holder.durationView.setText((new DecimalFormat("0.0")).format(hours) +"h");
     if (occurrences.get(position).getTitle().length() > 50) {
       holder.titleView.setText(occurrences.get(position).getTitle().toCharArray(), 0, 50);
     } else {
@@ -63,14 +68,14 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.ViewHold
 
     public CardView cardView;
     public TextView startView;
-    public TextView endView;
+    public TextView durationView;
     public TextView titleView;
 
     public ViewHolder(View itemLayoutView) {
       super(itemLayoutView);
       cardView = (CardView) itemLayoutView;
       startView = (TextView) itemLayoutView.findViewById(R.id.day_card_start);
-      endView = (TextView) itemLayoutView.findViewById(R.id.day_card_end);
+      durationView = (TextView) itemLayoutView.findViewById(R.id.day_card_duration);
       titleView = (TextView) itemLayoutView.findViewById(R.id.day_card_title);
     }
   }

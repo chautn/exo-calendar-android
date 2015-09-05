@@ -71,6 +71,7 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
     setSupportActionBar(toolbar);
     actionBar = getSupportActionBar();
     actionBar.setDisplayShowTitleEnabled(false);
+    actionBar.getThemedContext().setTheme(R.style.ActionBarTheme);
     recyclerView = (RecyclerView) findViewById(R.id.day_recyclerview);
     layoutManager = new LinearLayoutManager(this);
     recyclerView.setLayoutManager(layoutManager);

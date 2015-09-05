@@ -5,12 +5,12 @@
   tools:context="org.exoplatform.android.calendar.ui.DayViewActivity">
   <item
     android:id="@+id/create_event"
-    android:title="(+E)"
+    android:title="+event"
     android:orderInCategory="100"
     app:showAsAction="ifRoom"/>
   <item
     android:id="@+id/create_task"
-    android:title="(+T)"
+    android:title="+task"
     android:orderInCategory="100"
     app:showAsAction="ifRoom"/>
 </menu>

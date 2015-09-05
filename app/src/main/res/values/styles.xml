@@ -4,5 +4,13 @@
   <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
     <!-- Customize your theme here. -->
   </style>
+  <style name="ActionBarTheme" parent="AppTheme">
+    <item name="android:actionMenuTextColor">#ffffff</item>
+    <item name="android:actionMenuTextAppearance">@style/ActionBarTheme.MenuTextStyle</item>
+  </style>
+  <style name="ActionBarTheme.MenuTextStyle">
+    <item name="android:textAllCaps">false</item>
+    <item name="android:textSize">14sp</item>
+  </style>
 
 </resources>
