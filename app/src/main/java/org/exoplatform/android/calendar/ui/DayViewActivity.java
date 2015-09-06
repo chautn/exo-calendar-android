@@ -1,6 +1,7 @@
 package org.exoplatform.android.calendar.ui;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
 
 import org.exoplatform.android.calendar.ExoCalendarApp;
 import org.exoplatform.android.calendar.R;
@@ -40,7 +43,7 @@ import retrofit.client.Response;
 /**
  * Created by chautn on 8/28/15.
  */
-public class DayViewActivity extends AppCompatActivity implements OccurrenceViewFragment.CommunicationInterface {
+public class DayViewActivity extends AppCompatActivity implements DetailFragmentCommunication {
 
   public static final int CREATE_EVENT = 1;
   public static final int CREATE_TASK = 2;
@@ -352,42 +355,96 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
     }
   }
 
-  //Implements CommunicationInterface
-  public ExoCalendarConnector getConnector() {
-    return connector;
-  }
-  public List<ComparableOccurrence> getOccurrenceList() {
-    return occurrences;
-  }
-  public void onItemDeleted(int position, String id) {
-    occurrences.remove(position);
-    adapter.notifyItemRemoved(position);
-    OccurrenceViewFragment fragment = (OccurrenceViewFragment) getFragmentManager().findFragmentById(R.id.day_fragment_container);
+  //Implements DetailFragmentCommunication
+  public void onItemDeleted(String itemId) {
+    int length = occurrences.size();
+    for (int i=0; i < length; i++) {
+      if (itemId.equals(occurrences.get(i).getId())) {
+        occurrences.remove(i);
+        adapter.notifyItemRemoved(i);
+        break;
+      }
+    }
+    Fragment fragment = getFragmentManager().findFragmentById(R.id.day_fragment_container);
     if (fragment != null) {
       getFragmentManager().beginTransaction().remove(fragment).commit();
     }
   }
-  public void onItemUpdated(int position, String id, ComparableOccurrence item) {
-    occurrences.set(position, item);
-    adapter.notifyItemChanged(position);
+
+  public void onItemUpdated(String itemId, ComparableOccurrence item) {
+    int length = occurrences.size();
+    for (int i=0; i < length; i++) {
+      if (itemId.equals(occurrences.get(i).getId())) {
+        occurrences.set(i, item);
+        Collections.sort(occurrences);
+        adapter.notifyDataSetChanged();
+        break;
+      }
+    }
   }
-  public ArrayList<ExoCalendar> getCalendarList() {
-    return new ArrayList<>(Arrays.asList(calendar_ds.data));
+
+  public int getItemColor(String calendarId) {
+    String color_name = "";
+    int length = calendar_ds.data.length;
+    for (int i=0; i < length; i++) {
+      if (calendarId.equals(calendar_ds.data[i].getId())) {
+        color_name = calendar_ds.data[i].getColor();
+        break;
+      }
+    }
+    return getResources().getIdentifier(color_name, "color", getPackageName());
+  }
+
+  public String getCalendarName(String calendarId) {
+    String calendar_name = "";
+    int length = calendar_ds.data.length;
+    for (int i=0; i < length; i++) {
+      if (calendarId.equals(calendar_ds.data[i].getId())) {
+        calendar_name = calendar_ds.data[i].getName();
+        break;
+      }
+    }
+    return calendar_name;
+  }
+
+  public ArrayList<String> getCalendarJsonList() {
+    ArrayList<String> calendarJsonList = new ArrayList<>();
+    Gson gson = connector.gson;
+    int length = calendar_ds.data.length;
+    for (int i=0; i < length; i++) {
+      String calendarJson = gson.toJson(calendar_ds.data[i]);
+      calendarJsonList.add(calendarJson);
+    }
+    return calendarJsonList;
   }
 
   //Item click (show item in fragment)
   public void onItemClick(int position) {
     FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-    OccurrenceViewFragment fragment = new OccurrenceViewFragment();
-    Bundle args = new Bundle();
-    args.putInt("position", position);
-    fragment.setArguments(args);
-    fragmentTransaction.replace(R.id.day_fragment_container, fragment);
-    fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
-    fragmentTransaction.commit();
+    ComparableOccurrence item = occurrences.get(position);
+    String itemJson = connector.gson.toJson(item);
+    if (item instanceof Event) {
+      EventFragment fragment = new EventFragment();
+      Bundle args = new Bundle();
+      args.putString(EventFragment.ARGUMENT_BUNDLE_KEY_ITEM_JSON, itemJson);
+      args.putLong(EventFragment.ARGUMENT_BUNDLE_KEY_DATE, date.getTime());
+      fragment.setArguments(args);
+      fragmentTransaction.replace(R.id.day_fragment_container, fragment);
+      fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
+      fragmentTransaction.commit();
+    } else if (item instanceof Task) {
+      TaskFragment fragment = new TaskFragment();
+      Bundle args = new Bundle();
+      args.putString(TaskFragment.ARGUMENT_BUNDLE_KEY_ITEM_JSON, itemJson);
+      args.putLong(TaskFragment.ARGUMENT_BUNDLE_KEY_DATE, date.getTime());
+      fragment.setArguments(args);
+      fragmentTransaction.replace(R.id.day_fragment_container, fragment);
+      fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
+      fragmentTransaction.commit();
+    }
   }
   public void removeFragment() {
-    OccurrenceViewFragment fragment = (OccurrenceViewFragment) getFragmentManager().findFragmentById(R.id.day_fragment_container);
+    Fragment fragment = getFragmentManager().findFragmentById(R.id.day_fragment_container);
     if (fragment != null) {
       getFragmentManager().beginTransaction().remove(fragment).commit();
     }

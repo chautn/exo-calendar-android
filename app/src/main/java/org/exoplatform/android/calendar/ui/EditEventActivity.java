@@ -1,6 +1,5 @@
 package org.exoplatform.android.calendar.ui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
@@ -9,7 +8,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -42,11 +40,11 @@ public class EditEventActivity extends AppCompatActivity {
   public static final String RECEIVED_INTENT_KEY_EVENT_ID = "itemId";
   public static final String RECEIVED_INTENT_KEY_POSITION = "itemPosition";
   public static final String RECEIVED_INTENT_KEY_DATE = "date";
-  public static final String RETURN_INTENT_KEY_EVENT_JSON = "itemJson";
-  public static final String RETURN_INTENT_KEY_EVENT_ID = "itemId";
-  public static final String RETURN_INTENT_KEY_POSITION = "itemPosition";
-  public static final String RETURN_INTENT_KEY_OLD_DATE = "oldDate";
-  public static final String RETURN_INTENT_KEY_NEW_DATE = "newDate";
+  public static final String RETURNED_INTENT_KEY_EVENT_JSON = "itemJson";
+  public static final String RETURNED_INTENT_KEY_EVENT_ID = "itemId";
+  public static final String RETURNED_INTENT_KEY_POSITION = "itemPosition";
+  public static final String RETURNED_INTENT_KEY_OLD_DATE = "oldDate";
+  public static final String RETURNED_INTENT_KEY_NEW_DATE = "newDate";
 
   public EditText editTextTitle, editTextDescription, editTextLocation;
   public TextView cancel, save;
@@ -325,11 +323,11 @@ public class EditEventActivity extends AppCompatActivity {
         @Override
         public void success(Response response, Response response2) {
           Intent intent = new Intent();
-          intent.putExtra(EditEventActivity.RETURN_INTENT_KEY_EVENT_JSON, connector.gson.toJson(event));
-          intent.putExtra(EditEventActivity.RETURN_INTENT_KEY_EVENT_ID, event_id);
-          intent.putExtra(EditEventActivity.RETURN_INTENT_KEY_POSITION, itemPosition);
-          intent.putExtra(EditEventActivity.RETURN_INTENT_KEY_OLD_DATE, oldDate);
-          intent.putExtra(EditEventActivity.RETURN_INTENT_KEY_NEW_DATE, event.getStartDate().getTime());
+          intent.putExtra(EditEventActivity.RETURNED_INTENT_KEY_EVENT_JSON, connector.gson.toJson(event));
+          intent.putExtra(EditEventActivity.RETURNED_INTENT_KEY_EVENT_ID, event_id);
+          intent.putExtra(EditEventActivity.RETURNED_INTENT_KEY_POSITION, itemPosition);
+          intent.putExtra(EditEventActivity.RETURNED_INTENT_KEY_OLD_DATE, oldDate);
+          intent.putExtra(EditEventActivity.RETURNED_INTENT_KEY_NEW_DATE, event.getStartDate().getTime());
 
           setResult(RESULT_OK, intent);
           finish();
