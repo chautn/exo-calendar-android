@@ -8,7 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -48,6 +50,18 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         final TextView calendar_name_view = (TextView) layout.findViewById(R.id.calendar_dialog_name);
         final TextView calendar_description_view = (TextView) layout.findViewById(R.id.calendar_dialog_description);
         final ExoCalendar calendar_copy = CalendarAdapter.this.calendar_ds.copyValueAt(position);
+        final GridView gridView = (GridView) layout.findViewById(R.id.calendar_dialog_color);
+        final ColorAdapter colorAdapter = new ColorAdapter(context);
+        colorAdapter.setSelected(calendar_copy.getColor());
+        gridView.setAdapter(colorAdapter);
+        gridView.setNumColumns(6);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+          @Override
+          public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            colorAdapter.setSelected(position);
+            colorAdapter.notifyDataSetChanged();
+          }
+        });
         calendar_name_view.setText(calendar_copy.getName());
         calendar_description_view.setText(calendar_copy.getDescription());
         builder.setView(layout);
@@ -56,6 +70,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
           public void onClick(DialogInterface dialogInterface, int which) {
             calendar_copy.setName(calendar_name_view.getText().toString());
             calendar_copy.setDescription(calendar_description_view.getText().toString());
+            calendar_copy.setColor(colorAdapter.getSelectedColor());
             Callback<Response> callback = new Callback<Response>() {
               @Override
               public void success(Response response, Response response2) {
@@ -104,7 +119,10 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
   }
 
   public void onBindViewHolder(ViewHolder holder, final int position) {
-    holder.calendar_name_view.setText(calendar_ds.data[position].getName());
+    ExoCalendar item = calendar_ds.data[position];
+    holder.calendar_name_view.setText(item.getName());
+    int color = context.getResources().getIdentifier(item.getColor(), "color", context.getPackageName());
+    holder.calendar_card.setCardBackgroundColor(context.getResources().getColor(color));
   }
 
   public int getItemCount() {

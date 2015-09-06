@@ -20,4 +20,13 @@
     android:hint="Description"
     android:inputType="textMultiLine"
     android:lines="5"/>
+  <GridView
+    android:id="@+id/calendar_dialog_color"
+    android:layout_width="150dp"
+    android:layout_height="wrap_content"
+    android:numColumns="auto_fit"
+    android:verticalSpacing="2dp"
+    android:horizontalSpacing="1dp"
+    android:gravity="center"
+    android:stretchMode="columnWidth"></GridView>
 </LinearLayout>

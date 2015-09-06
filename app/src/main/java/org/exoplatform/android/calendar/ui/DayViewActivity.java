@@ -79,7 +79,7 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
     init();
     caption.setText((new SimpleDateFormat("MMM dd ''yy")).format(date));
     connector = ((ExoCalendarApp) getApplicationContext()).getConnector();
-    adapter = new DayViewAdapter(this, connector, date, occurrences);
+    adapter = new DayViewAdapter(this, calendar_ds, connector, date, occurrences);
     recyclerView.setAdapter(adapter);
 
     next.setOnClickListener(new View.OnClickListener() {
@@ -146,7 +146,7 @@ public class DayViewActivity extends AppCompatActivity implements OccurrenceView
     event_ds = new ParsableList<>();
     task_ds = new ParsableList<>();
     occurrences = new ArrayList<>();
-    adapter = new DayViewAdapter(this, connector, date, occurrences);
+    adapter = new DayViewAdapter(this, calendar_ds, connector, date, occurrences);
     recyclerView.setAdapter(adapter);
   }
 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="asparagus">#829F53</color>
+  <color name="munsell_blue">#0093af</color>
+  <color name="navy_blue">#000080</color>
+  <color name="purple">#800080</color>
+  <color name="red">#ff0000</color>
+  <color name="brown">#663300</color>
+
+  <color name="laurel_green">#A9BA9D</color>
+  <color name="sky_blue">#7ec0ee</color>
+  <color name="blue_gray">#778899</color>
+  <color name="light_purple">#b19cd9</color>
+  <color name="hot_pink">#ff69b4</color>
+  <color name="light_brown">#f4a460</color>
+
+  <color name="moss_green">#A5D4A5</color>
+  <color name="powder_blue">#b0e0e6</color>
+  <color name="light_blue">#add8e6</color>
+  <color name="pink">#ffc0cb</color>
+  <color name="orange">#ffa500</color>
+  <color name="gray">#d3d3d3</color>
+  
+  <color name="green">#00ff00</color>
+  <color name="baby_blue">#ccffff</color>
+  <color name="light_gray">#d3d3d3</color>
+  <color name="beige">#f5f5dc</color>
+  <color name="yellow">#ffff00</color>
+  <color name="plum">#8e4585</color>
+</resources>

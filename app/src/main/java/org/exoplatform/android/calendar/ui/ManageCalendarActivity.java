@@ -13,6 +13,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -52,8 +55,9 @@ public class ManageCalendarActivity extends AppCompatActivity {
     Toolbar toolbar = (Toolbar) findViewById(R.id.calendar_toolbar);
     timezoneView = (TextView) findViewById(R.id.calendar_timezone);
     setSupportActionBar(toolbar);
-    ActionBar bar = getSupportActionBar();
-    bar.setDisplayShowTitleEnabled(false);
+    actionBar = getSupportActionBar();
+    actionBar.setDisplayShowTitleEnabled(false);
+    actionBar.getThemedContext().setTheme(R.style.ActionBarTheme);
 
     TimeZone timeZone = TimeZone.getDefault();
     timezoneView.setText(getString(R.string.your_timezone_is) + ": " + timeZone.getDisplayName(false, TimeZone.SHORT));
@@ -122,6 +126,17 @@ public class ManageCalendarActivity extends AppCompatActivity {
     LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.calendar_dialog, null);
     final TextView calendar_name = (TextView) layout.findViewById(R.id.calendar_dialog_name);
     final TextView calendar_description = (TextView) layout.findViewById(R.id.calendar_dialog_description);
+    final GridView gridView = (GridView) layout.findViewById(R.id.calendar_dialog_color);
+    final ColorAdapter colorAdapter = new ColorAdapter(getApplicationContext());
+    gridView.setAdapter(colorAdapter);
+    gridView.setNumColumns(6);
+    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        colorAdapter.setSelected(position);
+        colorAdapter.notifyDataSetChanged();
+      }
+    });
     builder.setView(layout);
 
     final ExoCalendar to_be_created_calendar = new ExoCalendar();
@@ -132,21 +147,22 @@ public class ManageCalendarActivity extends AppCompatActivity {
     builder.setPositiveButton("Save", new AlertDialog.OnClickListener() {
       @Override
       public void onClick(DialogInterface dialogInterface, int which) {
-      to_be_created_calendar.setName(calendar_name.getText().toString());
-      to_be_created_calendar.setDescription(calendar_description.getText().toString());
-      Callback<Response> callback = new Callback<Response>() {
-        @Override
-        public void success(Response response, Response response2) {
-          calendar_ds.add(another);
-          adapter.notifyItemInserted(calendar_ds.data.length);
-        }
+        to_be_created_calendar.setName(calendar_name.getText().toString());
+        to_be_created_calendar.setDescription(calendar_description.getText().toString());
+        to_be_created_calendar.setColor(colorAdapter.getSelectedColor());
+        Callback<Response> callback = new Callback<Response>() {
+          @Override
+          public void success(Response response, Response response2) {
+            calendar_ds.add(another);
+            adapter.notifyItemInserted(calendar_ds.data.length); //due to CAL-1154, can't get newly created ID
+          }
 
-        @Override
-        public void failure(RetrofitError error) {
-          //
-        }
-      };
-      connector.getService().createCalendar(to_be_created_calendar, callback);
+          @Override
+          public void failure(RetrofitError error) {
+            //
+          }
+        };
+        connector.getService().createCalendar(to_be_created_calendar, callback);
       }
     });
     builder.show();

@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import org.exoplatform.android.calendar.R;
 import org.exoplatform.calendar.client.model.ComparableOccurrence;
+import org.exoplatform.calendar.client.model.ExoCalendar;
+import org.exoplatform.calendar.client.model.ParsableList;
 import org.exoplatform.calendar.client.rest.ExoCalendarConnector;
 
 import java.text.DecimalFormat;
@@ -24,14 +26,16 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.ViewHold
 
   public Date date;
   public List<ComparableOccurrence> occurrences;
+  public ParsableList<ExoCalendar> calendar_ds;
   public ExoCalendarConnector connector;
   public Context context;
 
-  public DayViewAdapter(Context context, ExoCalendarConnector connector, Date date, List<ComparableOccurrence> occurrences) {
+  public DayViewAdapter(Context context, ParsableList<ExoCalendar> calendar_ds, ExoCalendarConnector connector, Date date, List<ComparableOccurrence> occurrences) {
     this.context = context;
     this.connector = connector;
     this.date = date;
     this.occurrences = occurrences;
+    this.calendar_ds = calendar_ds;
   }
 
   public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -58,6 +62,17 @@ public class DayViewAdapter extends RecyclerView.Adapter<DayViewAdapter.ViewHold
     } else {
       holder.titleView.setText(occurrences.get(position).getTitle());
     }
+    //color
+    String calendar_id = item.getCalendarId();
+    for (ExoCalendar calendar : calendar_ds.data) {
+      if (calendar_id.equals(calendar.getId())) {
+        String calendar_colour = calendar.getColor();
+        int c = context.getResources().getIdentifier(calendar_colour, "color", context.getPackageName());
+        holder.titleView.setTextColor(context.getResources().getColor(c));
+        break;
+      }
+    }
+
   }
 
   public int getItemCount() {
