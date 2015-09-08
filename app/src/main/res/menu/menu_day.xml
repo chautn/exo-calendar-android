@@ -4,13 +4,23 @@
   xmlns:tools="http://schemas.android.com/tools"
   tools:context="org.exoplatform.android.calendar.ui.DayViewActivity">
   <item
-    android:id="@+id/create_event"
+    android:id="@+id/d_create_event"
     android:title="+event"
     android:orderInCategory="100"
     app:showAsAction="ifRoom"/>
   <item
-    android:id="@+id/create_task"
+    android:id="@+id/d_create_task"
     android:title="+task"
+    android:orderInCategory="100"
+    app:showAsAction="ifRoom"/>
+  <item
+    android:id="@+id/d_this_week"
+    android:title="this week"
+    android:orderInCategory="100"
+    app:showAsAction="withText"/>
+  <item
+    android:id="@+id/d_manage_calendar"
+    android:title="manage calendar"
     android:orderInCategory="100"
     app:showAsAction="ifRoom"/>
 </menu>

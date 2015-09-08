@@ -1,9 +1,14 @@
 package org.exoplatform.android.calendar.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -36,6 +41,8 @@ public class WeekViewActivity extends AppCompatActivity {
   public TextView caption;
   public TextView next;
   public TextView prev;
+  public Toolbar toolbar;
+  public ActionBar actionBar;
   public RecyclerView recyclerView;
   public RecyclerView.LayoutManager layoutManager;
   public ExoCalendarConnector connector;
@@ -49,6 +56,11 @@ public class WeekViewActivity extends AppCompatActivity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.week);
+    toolbar = (Toolbar) findViewById(R.id.w_toolbar);
+    setSupportActionBar(toolbar);
+    actionBar = getSupportActionBar();
+    actionBar.setDisplayShowTitleEnabled(false);
+    actionBar.getThemedContext().setTheme(R.style.ActionBarTheme);
     caption = (TextView) findViewById(R.id.week_view_caption);
     recyclerView = (RecyclerView) findViewById(R.id.week_view);
     recyclerView.setHasFixedSize(true);
@@ -218,5 +230,29 @@ public class WeekViewActivity extends AppCompatActivity {
       }
     };
     connector.getService().getCalendars(true, 0, callback); //calendar loading starts here
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.menu_week, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    int id = item.getItemId();
+    switch (id) {
+      case R.id.w_today:
+        Intent intent1 = new Intent(this, DayViewActivity.class);
+        startActivity(intent1);
+        return true;
+      case R.id.w_manage_calendar:
+        Intent intent2 = new Intent(this, ManageCalendarActivity.class);
+        startActivity(intent2);
+        return true;
+      default:
+        break;
+    }
+    return super.onOptionsItemSelected(item);
   }
 }

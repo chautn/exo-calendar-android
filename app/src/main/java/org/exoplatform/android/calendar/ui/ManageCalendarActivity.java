@@ -101,15 +101,15 @@ public class ManageCalendarActivity extends AppCompatActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
     switch (id) {
-      case R.id.this_week:
+      case R.id.c_this_week:
         Intent intent_w = new Intent(this, WeekViewActivity.class);
         startActivity(intent_w);
         return true;
-      case R.id.today:
+      case R.id.c_today:
         Intent intent_d = new Intent(this, DayViewActivity.class);
         startActivity(intent_d);
         return true;
-      case R.id.create_calendar:
+      case R.id.c_create_calendar:
         createCalendar();
         return true;
       default:

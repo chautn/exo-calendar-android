@@ -118,11 +118,19 @@ public class DayViewActivity extends AppCompatActivity implements DetailFragment
   public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
     switch (id) {
-      case R.id.create_event:
+      case R.id.d_create_event:
         createEvent();
         return true;
-      case R.id.create_task:
+      case R.id.d_create_task:
         createTask();
+        return true;
+      case R.id.d_this_week:
+        Intent intent1 = new Intent(this, WeekViewActivity.class);
+        startActivity(intent1);
+        return true;
+      case R.id.d_manage_calendar:
+        Intent intent2 = new Intent(this, ManageCalendarActivity.class);
+        startActivity(intent2);
         return true;
       default:
         break;
